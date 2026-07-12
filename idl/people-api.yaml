@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: Zero consult employee - OpenAPI 3.2
+  description: ''
+  version: 1.0.0
+paths:
+  /customers:
+    get:
+      tags:
+        - customer
+      summary: Get the list of customers
+      operationId: customersList
+      responses:
+        '200':
+          description: A list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      tags:
+        - customer
+      summary: Add a new customer
+      operationId: addCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /customers/{id}:
+    get:
+      tags:
+        - customer
+      summary: Get a customer
+      operationId: getCustomer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      tags:
+        - customer
+      summary: Update a customer
+      operationId: updateCustomer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: Employee updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /employees:
+    get:
+      tags:
+        - employee
+      summary: Get the list of employees
+      operationId: employeesList
+      responses:
+        '200':
+          description: A list of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+    post:
+      tags:
+        - employee
+      summary: Add a new employee
+      operationId: addEmployee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '201':
+          description: Employee created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+  /employees/{id}:
+    get:
+      tags:
+        - employee
+      summary: Get an employee
+      operationId: getEmployee
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+    put:
+      tags:
+        - employee
+      summary: Update an employee
+      operationId: updateEmployee
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '200':
+          description: Employee updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        city:
+          type: string
+        companyName:
+          type: string
+        contactPersonFirstName:
+          type: string
+        contactPersonLastName:
+          type: string
+        email:
+          type: string
+        id:
+          type: string
+        phone:
+          type: string
+        sector:
+          $ref: '#/components/schemas/Sector'
+        startDate:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/CustomerStatus'
+        website:
+          type: string
+      required:
+        - companyName
+        - contactPersonFirstName
+        - contactPersonLastName
+        - email
+        - phone
+        - startDate
+        - sector
+        - status
+    CustomerStatus:
+      type: string
+      enum: [ "Active", "Inactive", "Prospect" ]
+    Department:
+      type: string
+      enum: [ "Engineering", "Design", "Marketing", "HR", "Finance", "Operations" ]
+    Employee:
+      type: object
+      properties:
+        department:
+          $ref: '#/components/schemas/Department'
+        email:
+          type: string
+        firstName:
+          type: string
+        functionTitle:
+          type: string
+        id:
+          type: string
+        lastName:
+          type: string
+        manager:
+          $ref: '#/components/schemas/Employee'
+        phone:
+          type: string
+        startDate:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/EmployeeStatus'
+      required:
+        - email
+        - firstName
+        - lastName
+        - phone
+        - startDate
+        - status
+    EmployeeStatus:
+      type: string
+      enum: [ "Active", "Inactive", "On leave" ]
+    Sector:
+      type: string
+      enum: [ "Tech", "Retail", "Healthcare", "Finance", "Government", "Education", "Other"]

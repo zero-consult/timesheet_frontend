@@ -1,8 +1,11 @@
 import {configureStore} from "@reduxjs/toolkit";
+import employeeSlice from "./employee.slice.ts";
 
 
 const store = configureStore({
-    reducer: {},
+    reducer: {
+        employee: employeeSlice.reducer
+    },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,
     })

@@ -63,7 +63,7 @@ pipeline {
                 sh "git config --global user.name 'Jenkins'"
                 sh "git tag -a ${env.MAJOR_VERSION}.${env.MINOR_VERSION}.${env.PATCH_VERSION} -m '${env.MAJOR_VERSION}.${env.MINOR_VERSION}.${env.PATCH_VERSION}'"
                 sh "GIT_SSH='ssh -i ~/.ssh/id_rsa'"
-                sh "git push git@github.com:zero-consult/people_frontend.git ${env.MAJOR_VERSION}.${env.MINOR_VERSION}.${env.PATCH_VERSION}"
+                sh "git push git@github.com:zero-consult/timesheet_frontend.git ${env.MAJOR_VERSION}.${env.MINOR_VERSION}.${env.PATCH_VERSION}"
 			}
 		}
 		stage('Build') {
@@ -95,10 +95,10 @@ pipeline {
 				    echo "pushing image"
 				    docker.withRegistry('http://nexus:8081', 'Nexus') {
 				        if(env.BRANCH_NAME != "production") {
-				            app = docker.build("docker-releases/people_frontend_${env.BRANCH_NAME}:$TAG")
+				            app = docker.build("docker-releases/timesheet_frontend_${env.BRANCH_NAME}:$TAG")
                             app.push("$TAG")
 				        } else {
-                            app = docker.build("docker-releases/people_frontend:$TAG")
+                            app = docker.build("docker-releases/timesheet_frontend:$TAG")
                             app.push("$TAG")
                         }
                     }

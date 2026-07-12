@@ -1,1 +1,2 @@
 export const PEOPLE_BACKEND_HOST= import.meta.env.VITE_PEOPLE_BACKEND_HOST
+export const TIMESHEET_BACKEND_HOST= import.meta.env.VITE_TIMESHEET_BACKEND_HOST
