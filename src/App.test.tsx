@@ -34,5 +34,5 @@ test('renders employees', async () => {
     )
     render(<App />);
     const linkElement = await screen.findAllByText("Employees");
-    expect(linkElement.length).toEqual(2);
+    expect(linkElement.length).toEqual(1);
 });
