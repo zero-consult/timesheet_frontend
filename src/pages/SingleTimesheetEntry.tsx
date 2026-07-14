@@ -145,8 +145,8 @@ function SingleTimesheetEntry() {
                     const mwDow = parseInt(moment(mwStart).format("d"));
                     mwStart.subtract(mwDow - 1, "days").add(weekOffset * 7, "days");
                     const days = Array.from({length: 7}, (_, i) => {
-                        const d = moment();
-                        d.add(i - 1 + weekOffset * 7, "days");
+                        const d = moment(mwStart);
+                        d.add(i + weekOffset * 7, "days");
                         return d;
                     });
                     const todayStr = moment().format("YYYY-MM-DD");
