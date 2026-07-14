@@ -6,11 +6,28 @@ import {Configuration, CustomerApiFp, EmployeeApiFp} from "../types/people";
 import {PEOPLE_BACKEND_HOST, TIMESHEET_BACKEND_HOST} from "../Constants.ts";
 import axios from "axios";
 import {Link} from "react-router";
-import {AlertCircle, CheckCircle2, Pencil, Plus, Search, SortAscIcon, SortDesc, Timer, Trash2, X} from "lucide-react";
+import {
+    AlertCircle,
+    Check,
+    CheckCircle2,
+    Pencil,
+    Plus,
+    Search,
+    SortAscIcon,
+    SortDesc,
+    Timer,
+    Trash2,
+    X
+} from "lucide-react";
 import {calcHours, formatHours} from "../utils/timeUtils.ts";
 import moment from "moment";
 import {loadTimesheetEntries, selectTimesheetEntries} from "../redux/timesheet.slice.ts";
-import {TimesheetApiFp, type TimesheetEntry, type TimesheetStatus} from "../types/timesheet";
+import {
+    TimesheetApiFp,
+    type TimesheetEntry,
+    type TimesheetStatus,
+    TimesheetStatus as TimesheetEntryStatus
+} from "../types/timesheet";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 
 const TIMESHEET_STATUS_COLORS: Record<TimesheetStatus, string> = {
@@ -51,6 +68,16 @@ function Timesheetlist() {
     const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
     const [currentPage, setCurrentPage] = useState(1);
 
+    // Week range
+    const today = moment();
+    const dayOfWeek = parseInt(today.format("d"));
+    const weekStart = moment().subtract(dayOfWeek - 1, "days").add(weekOffset * 7, "days");
+    const weekEnd = moment(weekStart).add(6, "days");
+
+    const weekDays = Array.from({length: 7}, (_, i) => {
+        return moment(weekStart).add(i, "days");
+    });
+
     async function fetchEmployees() {
         const employeeList = await EmployeeApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).employeesList();
         const employeeListResponse = await employeeList(axios);
@@ -64,7 +91,7 @@ function Timesheetlist() {
     }
 
     async function fetchTimesheetEntries() {
-        const timesheetEntryList = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).timesheetsList();
+        const timesheetEntryList = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).timesheetsList(weekStart.format("YYYY-MM-DD"), weekEnd.format("YYYY-MM-DD"));
         const timesheetEntryListResponse = await timesheetEntryList(axios);
         dispatch(loadTimesheetEntries(timesheetEntryListResponse.data));
     }
@@ -75,15 +102,9 @@ function Timesheetlist() {
         fetchTimesheetEntries();
     }, []);
 
-    // Week range
-    const today = moment();
-    const dayOfWeek = parseInt(today.format("d"));
-    const weekStart = moment().subtract(dayOfWeek - 1, "days").add(weekOffset * 7, "days");
-    const weekEnd = moment(weekStart).add(6, "days");
-
-    const weekDays = Array.from({length: 7}, (_, i) => {
-        return moment(weekStart).add(i, "days");
-    });
+    useEffect(() => {
+        fetchTimesheetEntries();
+    }, [weekOffset])
 
     const filtered = useMemo(() => {
         let list = [...entries];
@@ -157,6 +178,32 @@ function Timesheetlist() {
         return entries.filter((e) => e.date === key).reduce((acc, e) => acc + calcHours(e.startTime, e.endTime), 0);
     });
     const maxDayHours = Math.max(...hoursPerDay, 8);
+
+    async function deleteTimesheetEntry(id: string) {
+        const deleteTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).deleteTimesheetEntry(id);
+        const deleteTimesheetEntryResponse = await deleteTimesheetEntry(axios);
+        if (deleteTimesheetEntryResponse.status === 204) {
+            fetchTimesheetEntries();
+        }
+    }
+
+    async function updateTimesheetEntry(updatedEntry: TimesheetEntry) {
+        const updateTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(updatedEntry.id || "", updatedEntry);
+        const updateTimesheetEntryResponse = await updateTimesheetEntry(axios);
+        if (updateTimesheetEntryResponse.status === 200) {
+            fetchTimesheetEntries();
+        }
+    }
+
+    async function approveTimesheetEntry(entry: TimesheetEntry) {
+        const updatedEntry = {...entry, status: TimesheetEntryStatus.Approved};
+        await updateTimesheetEntry(updatedEntry);
+    }
+
+    async function rejectTimesheetEntry(entry: TimesheetEntry) {
+        const updatedEntry = {...entry, status: TimesheetEntryStatus.Rejected};
+        await updateTimesheetEntry(updatedEntry);
+    }
 
     return (
         <>
@@ -365,8 +412,18 @@ function Timesheetlist() {
                                                     className="p-1.5 rounded-md hover:bg-primary/15 hover:text-primary text-muted-foreground transition-colors"><Pencil
                                                 className="w-3.5 h-3.5"/></Link>
                                                 <button
-                                                    className="p-1.5 rounded-md hover:bg-destructive/15 hover:text-destructive text-muted-foreground transition-colors">
+                                                    onClick={() => deleteTimesheetEntry(entry.id || "")}
+                                                    className="cursor-pointer p-1.5 rounded-md hover:bg-destructive/15 hover:text-destructive text-muted-foreground transition-colors">
                                                     <Trash2 className="w-3.5 h-3.5"/></button>
+                                                <button
+                                                    onClick={() => approveTimesheetEntry(entry)}
+                                                    className="cursor-pointer p-1.5 rounded-md hover:bg-destructive/15 hover:text-destructive text-muted-foreground transition-colors">
+                                                    <Check className="w-3.5 h-3.5"/></button>
+                                                <button
+                                                    onClick={() => rejectTimesheetEntry(entry)}
+                                                    className="cursor-pointer p-1.5 rounded-md hover:bg-destructive/15 hover:text-destructive text-muted-foreground transition-colors">
+                                                    <X className="w-3.5 h-3.5"/></button>
+
                                             </>
                                             : <></>
                                         }

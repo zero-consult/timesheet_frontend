@@ -9,9 +9,11 @@ import {TimesheetApiFp} from "../types/timesheet";
 import {
     loadSingleTimesheetEntry,
     resetSingleTimesheetEntry,
-    selectSelectedTimesheetEntry, updateCustomerId, updateEmployeeId
+    selectSelectedTimesheetEntry,
+    updateCustomerId,
+    updateEmployeeId
 } from "../redux/timesheet.slice.ts";
-import {Clock, Save} from "lucide-react";
+import {Clock, Info, Save} from "lucide-react";
 import {calcHours, formatHours} from "../utils/timeUtils.ts";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import moment from "moment";
@@ -25,17 +27,18 @@ function SingleTimesheetEntry() {
     const [selectedDates, setSelectedDates] = useState<string[]>([]);
     const [weekOffset, setWeekOffset] = useState(0);
     const isAccepted = timesheetEntry.status === "Approved";
+    const endTimeAfterStartTime = timesheetEntry.endTime > timesheetEntry.startTime;
 
     function toggleDate(dateStr: string) {
-            const exists = selectedDates.includes(dateStr);
-            setSelectedDates(exists ? selectedDates.filter((d) => d !== dateStr) : [...selectedDates, dateStr]);
+        const exists = selectedDates.includes(dateStr);
+        setSelectedDates(exists ? selectedDates.filter((d) => d !== dateStr) : [...selectedDates, dateStr]);
     }
 
     async function fetchEmployees() {
         const employeeList = await EmployeeApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).employeesList();
         const employeeListResponse = await employeeList(axios);
         dispatch(loadEmployees(employeeListResponse.data));
-        if(employeeListResponse.data.length > 0) {
+        if (employeeListResponse.data.length > 0) {
             dispatch(updateEmployeeId(employeeListResponse.data[0].id || ""));
         }
     }
@@ -44,7 +47,7 @@ function SingleTimesheetEntry() {
         const customerList = await CustomerApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).customersList();
         const customerListResponse = await customerList(axios);
         dispatch(loadCustomers(customerListResponse.data));
-        if(customerListResponse.data.length > 0) {
+        if (customerListResponse.data.length > 0) {
             dispatch(updateCustomerId(customerListResponse.data[0].id || ""));
         }
     }
@@ -59,7 +62,7 @@ function SingleTimesheetEntry() {
         const timesheetEntryFetchResponse = await timesheetEntryFetch(axios);
         dispatch(loadSingleTimesheetEntry(timesheetEntryFetchResponse.data));
     }
-    
+
     useEffect(() => {
         if (typeof timesheetEntryId !== "undefined") {
             fetchTimesheetEntry(timesheetEntryId);
@@ -70,16 +73,16 @@ function SingleTimesheetEntry() {
 
 
     async function saveTimesheetEntries() {
-        if(typeof timesheetEntryId !== "undefined") {
+        if (typeof timesheetEntryId !== "undefined") {
             const timesheetEntryUpdate = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(timesheetEntryId, timesheetEntry);
             const timesheetEntryUpdateResponse = await timesheetEntryUpdate(axios);
-            if(timesheetEntryUpdateResponse.status === 200) {
+            if (timesheetEntryUpdateResponse.status === 200) {
                 window.location.href = "/timesheets";
             } // else {
-                // TODO
+            // TODO
             //}
         } else {
-            for(const date of selectedDates) {
+            for (const date of selectedDates) {
                 const timesheetEntryToCreate = {...timesheetEntry, date: date};
                 const addTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).addTimesheetEntry(timesheetEntryToCreate);
                 await addTimesheetEntry(axios);
@@ -92,8 +95,11 @@ function SingleTimesheetEntry() {
     return <>
         <div className="grid grid-cols-2 gap-4 p-5">
             <div className="col-span-2">
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Employee</label>
-                <select disabled={isAccepted} className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer" value={timesheetEntry.employeeId} onChange={(e) => dispatch(updateEmployeeId(e.target.value))}>
+                <label
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Employee</label>
+                <select disabled={isAccepted}
+                        className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
+                        value={timesheetEntry.employeeId} onChange={(e) => dispatch(updateEmployeeId(e.target.value))}>
                     {employees.map((e) => <option key={e.id} value={e.id}>{e.firstName + " " + e.lastName}</option>)}
                 </select>
             </div>
@@ -101,7 +107,7 @@ function SingleTimesheetEntry() {
             <div className="col-span-2">
                 <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        {typeof timesheetEntryId !== "undefined" ? "Datum" : `Dag(en) selecteren${selectedDates.length > 1 ? ` · ${selectedDates.length} geselecteerd` : ""}`}
+                        {typeof timesheetEntryId !== "undefined" ? "Date" : `Day(s) selected${selectedDates.length > 1 ? ` · ${selectedDates.length} selected` : ""}`}
                     </label>
                     {typeof timesheetEntryId === "undefined" && (() => {
                         const mwStart = moment();
@@ -111,21 +117,38 @@ function SingleTimesheetEntry() {
                         const label = `${mwStart.format("DD MMM")} – ${mwEnd.format("DD MMM")}`;
                         return (
                             <div className="flex items-center gap-1">
-                                <span className="text-xs text-muted-foreground mr-1" style={{ fontFamily: "'DM Mono', monospace" }}>{label}</span>
-                                <button type="button" onClick={() => setWeekOffset((w) => w - 1)} className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-sm">‹</button>
-                                <button type="button" onClick={() => setWeekOffset(0)} className="px-1.5 py-0.5 rounded text-xs hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors" style={{ fontFamily: "'DM Mono', monospace" }}>Now</button>
-                                <button type="button" onClick={() => setWeekOffset((w) => w + 1)} className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-sm">›</button>
+                                <span className="text-xs text-muted-foreground mr-1"
+                                      style={{fontFamily: "'DM Mono', monospace"}}>{label}</span>
+                                <button type="button" onClick={() => setWeekOffset((w) => w - 1)}
+                                        className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-sm">‹
+                                </button>
+                                <button type="button" onClick={() => setWeekOffset(0)}
+                                        className="px-1.5 py-0.5 rounded text-xs hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                                        style={{fontFamily: "'DM Mono', monospace"}}>Now
+                                </button>
+                                <button type="button" onClick={() => setWeekOffset((w) => w + 1)}
+                                        className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-sm">›
+                                </button>
                             </div>
                         );
                     })()}
                 </div>
                 {typeof timesheetEntryId !== "undefined" ? (
-                    <input type="date" disabled={isAccepted} className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring" value={timesheetEntry.date} onChange={(e) => dispatch(loadSingleTimesheetEntry({ ...timesheetEntry, date: e.target.value }))} />
+                    <input type="date" disabled={isAccepted}
+                           className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
+                           value={timesheetEntry.date} onChange={(e) => dispatch(loadSingleTimesheetEntry({
+                        ...timesheetEntry,
+                        date: e.target.value
+                    }))}/>
                 ) : (() => {
                     const mwStart = moment();
                     const mwDow = parseInt(moment(mwStart).format("d"));
                     mwStart.subtract(mwDow - 1, "days").add(weekOffset * 7, "days");
-                    const days = Array.from({ length: 7 }, (_, i) => { const d = moment(); d.add(i-1 + weekOffset * 7, "days"); return d; });
+                    const days = Array.from({length: 7}, (_, i) => {
+                        const d = moment();
+                        d.add(i - 1 + weekOffset * 7, "days");
+                        return d;
+                    });
                     const todayStr = moment().format("YYYY-MM-DD");
                     return (
                         <div className="grid grid-cols-7 gap-1.5">
@@ -148,13 +171,15 @@ function SingleTimesheetEntry() {
                                         }`}
                                     >
                             <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
-                              {["Ma","Di","Wo","Do","Vr","Za","Zo"][i]}
+                              {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"][i]}
                             </span>
-                                        <span className={`text-sm font-semibold leading-none ${isToday && !selected ? "text-primary" : ""}`}>
+                                        <span
+                                            className={`text-sm font-semibold leading-none ${isToday && !selected ? "text-primary" : ""}`}>
                               {d.format("DD")}
                             </span>
                                         {isToday && (
-                                            <span className={`w-1 h-1 rounded-full ${selected ? "bg-primary-foreground/60" : "bg-primary"}`} />
+                                            <span
+                                                className={`w-1 h-1 rounded-full ${selected ? "bg-primary-foreground/60" : "bg-primary"}`}/>
                                         )}
                                     </button>
                                 );
@@ -165,17 +190,37 @@ function SingleTimesheetEntry() {
             </div>
 
             <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Starttijd</label>
-                <input disabled={isAccepted} type="time" className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring" value={timesheetEntry.startTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({...timesheetEntry, startTime: e.target.value }))} />
+                <label
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Start time</label>
+                <input disabled={isAccepted} type="time"
+                       className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
+                       value={timesheetEntry.startTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({
+                    ...timesheetEntry,
+                    startTime: e.target.value
+                }))}/>
             </div>
             <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Eindtijd</label>
-                <input disabled={isAccepted} type="time" className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring" value={timesheetEntry.endTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({...timesheetEntry, endTime: e.target.value }))} />
+                <label
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">End time</label>
+                <input disabled={isAccepted} type="time"
+                       className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
+                       value={timesheetEntry.endTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({
+                    ...timesheetEntry,
+                    endTime: e.target.value
+                }))}/>
             </div>
 
+            {!endTimeAfterStartTime ?
+                <div className="col-span-2 px-3 py-2 flex items-center gap-2 text-sm text-fg-warning rounded-base bg-primary/10 bg-warning-soft rounded-md border border-primary/20" role="alert">
+                    <Info className="w-4 h-4 text-primary flex-shrink-0"/>
+                    <span className="text-primary font-medium">Start time must be before end time.</span>
+                </div>
+                : <></>}
+
             {timesheetEntry.startTime && timesheetEntry.endTime && calcHours(timesheetEntry.startTime, timesheetEntry.endTime) > 0 && (
-                <div className="col-span-2 flex items-center gap-2 px-3 py-2 bg-primary/10 rounded-md border border-primary/20">
-                    <Clock className="w-4 h-4 text-primary flex-shrink-0" />
+                <div
+                    className="col-span-2 flex items-center gap-2 px-3 py-2 bg-primary/10 rounded-md border border-primary/20">
+                    <Clock className="w-4 h-4 text-primary flex-shrink-0"/>
                     <span className="text-sm text-primary font-medium">
                     {formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime))} each day
                         {typeof timesheetEntryId === "undefined" && selectedDates.length > 1 && (
@@ -188,20 +233,30 @@ function SingleTimesheetEntry() {
             )}
 
             <div className="col-span-2">
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Customer</label>
-                <select disabled={isAccepted} className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer" value={timesheetEntry.customerId} onChange={(e) => dispatch(updateCustomerId(e.target.value))}>
+                <label
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Customer</label>
+                <select disabled={isAccepted}
+                        className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
+                        value={timesheetEntry.customerId} onChange={(e) => dispatch(updateCustomerId(e.target.value))}>
                     {customers.map((customer) => <option key={customer.id}>{customer.companyName}</option>)}
                 </select>
             </div>
 
             <div className="col-span-2">
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Omschrijving</label>
-                <textarea disabled={isAccepted} className="w-full bg-input-background text-foreground placeholder:text-muted-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none" rows={2} placeholder="Wat heb je gedaan?" value={timesheetEntry.description} onChange={(e) => dispatch(loadSingleTimesheetEntry({ ...timesheetEntry, description: e.target.value }))} />
+                <label
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Description</label>
+                <textarea disabled={isAccepted}
+                          className="w-full bg-input-background text-foreground placeholder:text-muted-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                          rows={2} placeholder="What did you do?" value={timesheetEntry.description}
+                          onChange={(e) => dispatch(loadSingleTimesheetEntry({
+                              ...timesheetEntry,
+                              description: e.target.value
+                          }))}/>
             </div>
-            {isAccepted ? <></> :
+            {isAccepted || !endTimeAfterStartTime || (typeof timesheetEntryId === "undefined" && selectedDates.length === 0) ? <></> :
                 <div className="col-span-2">
                     <button onClick={() => saveTimesheetEntries()}
-                          className="cursor-pointer w-full flex items-center gap-2 px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+                            className="cursor-pointer w-full flex items-center gap-2 px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
                         <Save className="w-4 h-4"/> Save
                     </button>
                 </div>
