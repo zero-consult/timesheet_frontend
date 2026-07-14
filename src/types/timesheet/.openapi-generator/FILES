@@ -1,0 +1,16 @@
+.gitignore
+.npmignore
+.openapi-generator-ignore
+api.ts
+api/timesheet-api.ts
+base.ts
+common.ts
+configuration.ts
+docs/TimesheetApi.md
+docs/TimesheetEntry.md
+docs/TimesheetStatus.md
+git_push.sh
+index.ts
+model/index.ts
+model/timesheet-entry.ts
+model/timesheet-status.ts

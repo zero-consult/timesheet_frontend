@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Zero consult timesheet - OpenAPI 3.2
+  description: ''
+  version: 1.0.0
+paths:
+  /timesheets:
+    get:
+      tags:
+        - timesheet
+      summary: Get the list of timesheet entries
+      operationId: timesheetsList
+      responses:
+        '200':
+          description: A list of timesheet entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimesheetEntry'
+    post:
+      tags:
+        - timesheet
+      summary: Add a new timesheet entry
+      operationId: addTimesheetEntry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimesheetEntry'
+      responses:
+        '201':
+          description: Timesheet entry created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimesheetEntry'
+  /timesheets/{id}:
+    get:
+      tags:
+        - timesheet
+      summary: Get a timesheet entry
+      operationId: getTimesheetEntry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Timesheet entry found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimesheetEntry'
+    put:
+      tags:
+        - timesheet
+      summary: Update a timesheet entry
+      operationId: updateTimesheetEntry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimesheetEntry'
+      responses:
+        '200':
+          description: Timesheet entry updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimesheetEntry'
+components:
+  schemas:
+    TimesheetEntry:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+          format: time
+        endTime:
+          type: string
+          format: time
+        employeeId:
+          type: string
+        customerId:
+          type: string
+        id:
+          type: string
+        createdAt:
+          type: integer
+          format: int64
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/TimesheetStatus'
+      required:
+        - date
+        - startTime
+        - endTime
+        - employeeId
+        - customerId
+    TimesheetStatus:
+      type: string
+      enum:
+        - In progress
+        - Approved
+        - Rejected

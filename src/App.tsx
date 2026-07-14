@@ -4,6 +4,7 @@ import {BrowserRouter, Link, Route, Routes} from "react-router";
 import {Provider} from "react-redux";
 import store from "./redux/store.ts";
 import Timesheetlist from "./pages/Timesheetlist.tsx";
+import SingleTimesheetEntry from "./pages/SingleTimesheetEntry.tsx";
 
 function NavigationList({active}: { active: string }) {
     return (<><Link
@@ -97,6 +98,8 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Timesheetlist/>}/>
                             <Route path="/timesheets" element={<Timesheetlist/>}/>
+                            <Route path="/timesheets/add" element={<SingleTimesheetEntry/>}/>
+                            <Route path="/timesheets/:timesheetEntryId/edit" element={<SingleTimesheetEntry/>}/>
                         </Routes>
                     </main>
                 </div>

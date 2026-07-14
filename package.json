@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "generate": "openapi-generator-cli generate -g typescript-axios -i idl/people-api.yaml -o ./src/types/people --additional-properties=withSeparateModelsAndApi=true,modelPackage=model,apiPackage=api --api-package api --model-package model",
-    "build": "npm run generate && tsc -b && vite build",
+    "generatePeople": "openapi-generator-cli generate -g typescript-axios -i idl/people-api.yaml -o ./src/types/people --additional-properties=withSeparateModelsAndApi=true,modelPackage=model,apiPackage=api --api-package api --model-package model",
+    "generateTimesheet": "openapi-generator-cli generate -g typescript-axios -i idl/timesheet-api.yaml -o ./src/types/timesheet --additional-properties=withSeparateModelsAndApi=true,modelPackage=model,apiPackage=api --api-package api --model-package model",
+    "build": "npm run generatePeople && npm run generateTimesheet && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest"
