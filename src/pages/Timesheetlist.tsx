@@ -327,7 +327,7 @@ function Timesheetlist() {
 
             {/* Table */}
             <div className="overflow-x-auto px-8 py-4">
-                <table className="w-full border-collapse text-sm">
+                <table className="w-full border-collapse text-sm" style={{width: "1100px"}}>
                     <thead>
                     <tr className="border-b border-border">
                         {([
