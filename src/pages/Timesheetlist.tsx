@@ -343,15 +343,14 @@ function Timesheetlist() {
                             </th>
                         ))}
                         <th className="py-3 px-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-widest"
-                            style={{fontFamily: "'DM Mono', monospace"}}>Acties
+                            style={{fontFamily: "'DM Mono', monospace"}}>Actions
                         </th>
                     </tr>
                     </thead>
                     <tbody>
                     {filtered.length === 0 && (
                         <tr>
-                            <td colSpan={7} className="py-16 text-center text-muted-foreground text-sm">Geen
-                                urenregistraties gevonden voor deze week.
+                            <td colSpan={7} className="py-16 text-center text-muted-foreground text-sm">No timesheet entries found for this week.
                             </td>
                         </tr>
                     )}
