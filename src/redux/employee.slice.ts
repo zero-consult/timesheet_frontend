@@ -19,7 +19,7 @@ const initialState: EmployeeState = {
 
 
 const employeeSlice = createSlice({
-    name: 'account',
+    name: 'employee',
     initialState: initialState,
     reducers: {
         loadEmployees: (state, action: PayloadAction<Employee[]>) => {

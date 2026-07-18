@@ -24,8 +24,8 @@ const initialState: TimesheetState = {
 }
 
 
-const employeeSlice = createSlice({
-    name: 'account',
+const timesheetSlice = createSlice({
+    name: 'timesheet',
     initialState: initialState,
     reducers: {
         loadTimesheetEntries: (state, action: PayloadAction<TimesheetEntry[]>) => {
@@ -50,11 +50,11 @@ const employeeSlice = createSlice({
     }
 })
 
-export const {loadTimesheetEntries, loadSingleTimesheetEntry, updateCustomerId, updateEmployeeId, resetSingleTimesheetEntry} = employeeSlice.actions
+export const {loadTimesheetEntries, loadSingleTimesheetEntry, updateCustomerId, updateEmployeeId, resetSingleTimesheetEntry} = timesheetSlice.actions
 
 export const {
     selectTimesheetEntries,
     selectSelectedTimesheetEntry
-} = employeeSlice.getSelectors((rootState: RootState) => rootState.timesheet)
+} = timesheetSlice.getSelectors((rootState: RootState) => rootState.timesheet)
 
-export default employeeSlice
+export default timesheetSlice

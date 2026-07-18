@@ -19,7 +19,7 @@ const initialState: CustomerState = {
 
 
 const customerSlice = createSlice({
-    name: 'account',
+    name: 'customer',
     initialState: initialState,
     reducers: {
         loadCustomers: (state, action: PayloadAction<Customer[]>) => {

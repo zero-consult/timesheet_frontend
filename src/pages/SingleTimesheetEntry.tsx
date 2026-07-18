@@ -17,6 +17,7 @@ import {Clock, Info, Save} from "lucide-react";
 import {calcHours, formatHours} from "../utils/timeUtils.ts";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import moment from "moment";
+import {handleError, showError} from "../redux/error.slice.ts";
 
 function SingleTimesheetEntry() {
     const dispatch = useDispatch();
@@ -36,19 +37,27 @@ function SingleTimesheetEntry() {
 
     async function fetchEmployees() {
         const employeeList = await EmployeeApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).employeesList();
-        const employeeListResponse = await employeeList(axios);
-        dispatch(loadEmployees(employeeListResponse.data));
-        if (employeeListResponse.data.length > 0) {
-            dispatch(updateEmployeeId(employeeListResponse.data[0].id || ""));
+        try {
+            const employeeListResponse = await employeeList(axios);
+            dispatch(loadEmployees(employeeListResponse.data));
+            if (employeeListResponse.data.length > 0) {
+                dispatch(updateEmployeeId(employeeListResponse.data[0].id || ""));
+            }
+        } catch(error) {
+            dispatch(handleError(error))
         }
     }
 
     async function fetchCustomers() {
         const customerList = await CustomerApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).customersList();
-        const customerListResponse = await customerList(axios);
-        dispatch(loadCustomers(customerListResponse.data));
-        if (customerListResponse.data.length > 0) {
-            dispatch(updateCustomerId(customerListResponse.data[0].id || ""));
+        try {
+            const customerListResponse = await customerList(axios);
+            dispatch(loadCustomers(customerListResponse.data));
+            if (customerListResponse.data.length > 0) {
+                dispatch(updateCustomerId(customerListResponse.data[0].id || ""));
+            }
+        } catch(error) {
+            dispatch(handleError(error))
         }
     }
 
@@ -59,8 +68,12 @@ function SingleTimesheetEntry() {
 
     async function fetchTimesheetEntry(timesheetEntryId: string) {
         const timesheetEntryFetch = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).getTimesheetEntry(timesheetEntryId);
-        const timesheetEntryFetchResponse = await timesheetEntryFetch(axios);
-        dispatch(loadSingleTimesheetEntry(timesheetEntryFetchResponse.data));
+        try {
+            const timesheetEntryFetchResponse = await timesheetEntryFetch(axios);
+            dispatch(loadSingleTimesheetEntry(timesheetEntryFetchResponse.data));
+        } catch(error) {
+            dispatch(handleError(error))
+        }
     }
 
     useEffect(() => {
@@ -73,20 +86,40 @@ function SingleTimesheetEntry() {
 
 
     async function saveTimesheetEntries() {
+        if (timesheetEntry.startTime.trim().length === 0) {
+            dispatch(showError({title: "Input error", message: "Start time is required"}));
+            return;
+        }
+        if (timesheetEntry.endTime.trim().length === 0) {
+            dispatch(showError({title: "Input error", message: "End time is required"}));
+            return;
+        }
+        if (timesheetEntry.employeeId.trim().length === 0) {
+            dispatch(showError({title: "Input error", message: "An employee is required"}));
+            return;
+        }
+        if (timesheetEntry.customerId.trim().length === 0) {
+            dispatch(showError({title: "Input error", message: "A customer is required"}));
+            return;
+        }
         if (typeof timesheetEntryId !== "undefined") {
             const timesheetEntryUpdate = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(timesheetEntryId, timesheetEntry);
-            const timesheetEntryUpdateResponse = await timesheetEntryUpdate(axios);
-            if (timesheetEntryUpdateResponse.status === 200) {
+            try {
+                await timesheetEntryUpdate(axios);
                 window.location.href = "/timesheets";
-            } // else {
-            // TODO
-            //}
+            } catch(error) {
+                dispatch(handleError(error))
+            }
         } else {
             for (const date of selectedDates) {
                 const timesheetEntryToCreate = {...timesheetEntry, date: date};
-                const addTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).addTimesheetEntry(timesheetEntryToCreate);
-                await addTimesheetEntry(axios);
-                // TODO handle errors
+                try {
+                    const addTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).addTimesheetEntry(timesheetEntryToCreate);
+                    await addTimesheetEntry(axios);
+                } catch(error) {
+                    dispatch(handleError(error))
+                    return;
+                }
             }
             window.location.href = "/timesheets";
         }

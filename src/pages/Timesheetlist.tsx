@@ -29,6 +29,7 @@ import {
     TimesheetStatus as TimesheetEntryStatus
 } from "../types/timesheet";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
+import {handleError} from "../redux/error.slice.ts";
 
 const TIMESHEET_STATUS_COLORS: Record<TimesheetStatus, string> = {
     Approved: "bg-emerald-500/15 text-emerald-400",
@@ -80,20 +81,32 @@ function Timesheetlist() {
 
     async function fetchEmployees() {
         const employeeList = await EmployeeApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).employeesList();
-        const employeeListResponse = await employeeList(axios);
-        dispatch(loadEmployees(employeeListResponse.data));
+        try {
+            const employeeListResponse = await employeeList(axios);
+            dispatch(loadEmployees(employeeListResponse.data));
+        } catch(error) {
+            dispatch(handleError(error))
+        }
     }
 
     async function fetchCustomers() {
         const customerList = await CustomerApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).customersList();
-        const customerListResponse = await customerList(axios);
-        dispatch(loadCustomers(customerListResponse.data));
+        try {
+            const customerListResponse = await customerList(axios);
+            dispatch(loadCustomers(customerListResponse.data));
+        } catch(error) {
+            dispatch(handleError(error))
+        }
     }
 
     async function fetchTimesheetEntries() {
         const timesheetEntryList = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).timesheetsList(weekStart.format("YYYY-MM-DD"), weekEnd.format("YYYY-MM-DD"));
-        const timesheetEntryListResponse = await timesheetEntryList(axios);
-        dispatch(loadTimesheetEntries(timesheetEntryListResponse.data));
+        try {
+            const timesheetEntryListResponse = await timesheetEntryList(axios);
+            dispatch(loadTimesheetEntries(timesheetEntryListResponse.data));
+        } catch(error) {
+            dispatch(handleError(error))
+        }
     }
 
     useEffect(() => {
@@ -181,17 +194,21 @@ function Timesheetlist() {
 
     async function deleteTimesheetEntry(id: string) {
         const deleteTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).deleteTimesheetEntry(id);
-        const deleteTimesheetEntryResponse = await deleteTimesheetEntry(axios);
-        if (deleteTimesheetEntryResponse.status === 204) {
+        try {
+            await deleteTimesheetEntry(axios);
             fetchTimesheetEntries();
+        } catch(error) {
+            dispatch(handleError(error))
         }
     }
 
     async function updateTimesheetEntry(updatedEntry: TimesheetEntry) {
         const updateTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(updatedEntry.id || "", updatedEntry);
-        const updateTimesheetEntryResponse = await updateTimesheetEntry(axios);
-        if (updateTimesheetEntryResponse.status === 200) {
+        try {
+            await updateTimesheetEntry(axios);
             fetchTimesheetEntries();
+        } catch(error) {
+            dispatch(handleError(error))
         }
     }
 
@@ -327,7 +344,7 @@ function Timesheetlist() {
 
             {/* Table */}
             <div className="overflow-x-auto px-8 py-4">
-                <table className="w-full border-collapse text-sm" style={{width: "1100px"}}>
+                <table className="w-full border-collapse text-sm" style={{width: "1080px"}}>
                     <thead>
                     <tr className="border-b border-border">
                         {([
