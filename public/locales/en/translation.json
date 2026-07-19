@@ -1,0 +1,93 @@
+{
+  "menu": {
+    "employees": "Employees",
+    "customers": "Customers",
+    "timesheets": "Timesheets",
+    "logout": "Log out"
+  },
+  "pagination": {
+    "of": "{{from}} – {{until}} van {{total}}"
+  },
+  "single_timesheet_entry": {
+    "labels": {
+      "customer": "Customer",
+      "date": "Date",
+      "days_selected": "{{count}} selected",
+      "description": "Description",
+      "employee": "Employee",
+      "end_time": "End time",
+      "multiple_dates": "Day(s) selected",
+      "now": "Now",
+      "start_time": "Start time"
+    },
+    "weekday": {
+      "mo": "Mo",
+      "tu": "Tu",
+      "we": "We",
+      "th": "Th",
+      "fr": "Fr",
+      "sa": "Sa",
+      "su": "Su"
+    },
+    "input": {
+      "error": {
+        "start_time_after_end_time": "Start time must be before end time",
+        "customer_required": "A customer is required",
+        "employee_required": "An employee is required",
+        "end_time_required": "End time is required",
+        "start_time_required": "Start time is required"
+      }
+    },
+    "each_day": "{{hours}} Each day",
+    "day_overview": "{{hours}} total over {{days}} days"
+  },
+  "timesheetlist": {
+    "card": {
+      "approved": "Approved",
+      "each_day": "Each day",
+      "in_progress": "In progress",
+      "registrations_one": "Registration",
+      "registrations_other": "Registrations",
+      "this_week": "This week",
+      "total": "Total",
+      "weekday": {
+        "mo": "Mo",
+        "tu": "Tu",
+        "we": "We",
+        "th": "Th",
+        "fr": "Fr",
+        "sa": "Sa",
+        "su": "Su"
+      }
+    },
+    "departement": {
+      "design": "Design",
+      "engineering": "Engineering",
+      "finance": "Finance",
+      "hr": "HR",
+      "marketing": "Marketing",
+      "operations": "Operations"
+    },
+    "filter": {
+      "all_employees": "All employees",
+      "search": "Find employee, project"
+    },
+    "status": {
+      "all": "All",
+      "approved": "Approved",
+      "in_progress": "In progress",
+      "rejected": "Rejected"
+    },
+    "register": "Register hours",
+    "table_headers": {
+      "date": "Date",
+      "employee": "Employee",
+      "customer": "Customer",
+      "time": "Time",
+      "description": "Description",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "today": "Today"
+  }
+}

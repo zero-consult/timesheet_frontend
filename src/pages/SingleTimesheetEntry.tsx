@@ -18,8 +18,10 @@ import {calcHours, formatHours} from "../utils/timeUtils.ts";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import moment from "moment";
 import {handleError, showError} from "../redux/error.slice.ts";
+import {useTranslation} from "react-i18next";
 
 function SingleTimesheetEntry() {
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const {timesheetEntryId} = useParams();
     const customers = useSelector(selectCustomers);
@@ -43,7 +45,7 @@ function SingleTimesheetEntry() {
             if (employeeListResponse.data.length > 0) {
                 dispatch(updateEmployeeId(employeeListResponse.data[0].id || ""));
             }
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -56,7 +58,7 @@ function SingleTimesheetEntry() {
             if (customerListResponse.data.length > 0) {
                 dispatch(updateCustomerId(customerListResponse.data[0].id || ""));
             }
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -71,7 +73,7 @@ function SingleTimesheetEntry() {
         try {
             const timesheetEntryFetchResponse = await timesheetEntryFetch(axios);
             dispatch(loadSingleTimesheetEntry(timesheetEntryFetchResponse.data));
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -87,19 +89,31 @@ function SingleTimesheetEntry() {
 
     async function saveTimesheetEntries() {
         if (timesheetEntry.startTime.trim().length === 0) {
-            dispatch(showError({title: "Input error", message: "Start time is required"}));
+            dispatch(showError({
+                title: "Input error",
+                message: t('single_timesheet_entry.input.error.start_time_required')
+            }));
             return;
         }
         if (timesheetEntry.endTime.trim().length === 0) {
-            dispatch(showError({title: "Input error", message: "End time is required"}));
+            dispatch(showError({
+                title: "Input error",
+                message: t('single_timesheet_entry.input.error.end_time_required')
+            }));
             return;
         }
         if (timesheetEntry.employeeId.trim().length === 0) {
-            dispatch(showError({title: "Input error", message: "An employee is required"}));
+            dispatch(showError({
+                title: "Input error",
+                message: t('single_timesheet_entry.input.error.employee_required')
+            }));
             return;
         }
         if (timesheetEntry.customerId.trim().length === 0) {
-            dispatch(showError({title: "Input error", message: "A customer is required"}));
+            dispatch(showError({
+                title: "Input error",
+                message: t('single_timesheet_entry.input.error.customer_required')
+            }));
             return;
         }
         if (typeof timesheetEntryId !== "undefined") {
@@ -107,7 +121,7 @@ function SingleTimesheetEntry() {
             try {
                 await timesheetEntryUpdate(axios);
                 window.location.href = "/timesheets";
-            } catch(error) {
+            } catch (error) {
                 dispatch(handleError(error))
             }
         } else {
@@ -116,7 +130,7 @@ function SingleTimesheetEntry() {
                 try {
                     const addTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).addTimesheetEntry(timesheetEntryToCreate);
                     await addTimesheetEntry(axios);
-                } catch(error) {
+                } catch (error) {
                     dispatch(handleError(error))
                     return;
                 }
@@ -129,7 +143,7 @@ function SingleTimesheetEntry() {
         <div className="grid grid-cols-2 gap-4 p-5">
             <div className="col-span-2">
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Employee</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.employee')}</label>
                 <select disabled={isAccepted}
                         className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
                         value={timesheetEntry.employeeId} onChange={(e) => dispatch(updateEmployeeId(e.target.value))}>
@@ -140,14 +154,14 @@ function SingleTimesheetEntry() {
             <div className="col-span-2">
                 <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        {typeof timesheetEntryId !== "undefined" ? "Date" : `Day(s) selected${selectedDates.length > 1 ? ` · ${selectedDates.length} selected` : ""}`}
+                        {typeof timesheetEntryId !== "undefined" ? t('single_timesheet_entry.labels.date') : `${t('single_timesheet_entry.labels.multiple_dates')}${selectedDates.length > 1 ? ` · ${t('single_timesheet_entry.labels.days_selected', {count: selectedDates.length})}` : ""}`}
                     </label>
                     {typeof timesheetEntryId === "undefined" && (() => {
                         const mwStart = moment();
                         const mwDow = parseInt(moment(mwStart).format("d"));
-                        mwStart.subtract(mwDow - 1, "days").add(weekOffset * 7, "days");
+                        mwStart.subtract(mwDow === 0 ? 6 : mwDow - 1, "days").add(weekOffset * 7, "days");
                         const mwEnd = moment(mwStart).add(6, "days");
-                        const label = `${mwStart.format("DD MMM")} – ${mwEnd.format("DD MMM")}`;
+                        const label = `${mwStart.locale(i18n.resolvedLanguage || "en").format("DD MMM")} – ${mwEnd.locale(i18n.resolvedLanguage || "en").format("DD MMM")}`;
                         return (
                             <div className="flex items-center gap-1">
                                 <span className="text-xs text-muted-foreground mr-1"
@@ -157,7 +171,7 @@ function SingleTimesheetEntry() {
                                 </button>
                                 <button type="button" onClick={() => setWeekOffset(0)}
                                         className="px-1.5 py-0.5 rounded text-xs hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-                                        style={{fontFamily: "'DM Mono', monospace"}}>Now
+                                        style={{fontFamily: "'DM Mono', monospace"}}>
                                 </button>
                                 <button type="button" onClick={() => setWeekOffset((w) => w + 1)}
                                         className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors text-sm">›
@@ -176,10 +190,10 @@ function SingleTimesheetEntry() {
                 ) : (() => {
                     const mwStart = moment();
                     const mwDow = parseInt(moment(mwStart).format("d"));
-                    mwStart.subtract(mwDow - 1, "days").add(weekOffset * 7, "days");
+                    mwStart.subtract(mwDow === 0 ? 6 : mwDow - 1, "days").add(weekOffset * 7, "days");
                     const days = Array.from({length: 7}, (_, i) => {
                         const d = moment(mwStart);
-                        d.add(i + weekOffset * 7, "days");
+                        d.add(i, "days");
                         return d;
                     });
                     const todayStr = moment().format("YYYY-MM-DD");
@@ -204,7 +218,7 @@ function SingleTimesheetEntry() {
                                         }`}
                                     >
                             <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
-                              {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"][i]}
+                              {[t('single_timesheet_entry.weekday.mo'), t('single_timesheet_entry.weekday.tu'), t('single_timesheet_entry.weekday.we'), t('single_timesheet_entry.weekday.th'), t('single_timesheet_entry.weekday.fr'), t('single_timesheet_entry.weekday.sa'), t('single_timesheet_entry.weekday.su')][i]}
                             </span>
                                         <span
                                             className={`text-sm font-semibold leading-none ${isToday && !selected ? "text-primary" : ""}`}>
@@ -224,7 +238,7 @@ function SingleTimesheetEntry() {
 
             <div>
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Start time</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.start_time')}</label>
                 <input disabled={isAccepted} type="time"
                        className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
                        value={timesheetEntry.startTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({
@@ -234,7 +248,7 @@ function SingleTimesheetEntry() {
             </div>
             <div>
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">End time</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.end_time')}</label>
                 <input disabled={isAccepted} type="time"
                        className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
                        value={timesheetEntry.endTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({
@@ -244,9 +258,11 @@ function SingleTimesheetEntry() {
             </div>
 
             {!endTimeAfterStartTime ?
-                <div className="col-span-2 px-3 py-2 flex items-center gap-2 text-sm text-fg-warning rounded-base bg-primary/10 bg-warning-soft rounded-md border border-primary/20" role="alert">
+                <div
+                    className="col-span-2 px-3 py-2 flex items-center gap-2 text-sm text-fg-warning rounded-base bg-primary/10 bg-warning-soft rounded-md border border-primary/20"
+                    role="alert">
                     <Info className="w-4 h-4 text-primary flex-shrink-0"/>
-                    <span className="text-primary font-medium">Start time must be before end time.</span>
+                    <span className="text-primary font-medium">{t('single_timesheet_entry.error.start_time_after_end_time')}</span>
                 </div>
                 : <></>}
 
@@ -255,10 +271,10 @@ function SingleTimesheetEntry() {
                     className="col-span-2 flex items-center gap-2 px-3 py-2 bg-primary/10 rounded-md border border-primary/20">
                     <Clock className="w-4 h-4 text-primary flex-shrink-0"/>
                     <span className="text-sm text-primary font-medium">
-                    {formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime))} each day
+                    {t('single_timesheet_entry.each_day', {hours: formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime), i18n.resolvedLanguage)})}
                         {typeof timesheetEntryId === "undefined" && selectedDates.length > 1 && (
                             <span className="text-primary/70 font-normal ml-1.5">
-                        · {formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime) * selectedDates.length)} total over {selectedDates.length} days
+                        · {t('single_timesheet_entry.day_overview', { hours: formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime) * selectedDates.length, i18n.resolvedLanguage), days: selectedDates.length})}
                       </span>
                         )}
                   </span>
@@ -267,17 +283,18 @@ function SingleTimesheetEntry() {
 
             <div className="col-span-2">
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Customer</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.customer')}</label>
                 <select disabled={isAccepted}
                         className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
                         value={timesheetEntry.customerId} onChange={(e) => dispatch(updateCustomerId(e.target.value))}>
-                    {customers.map((customer) => <option key={customer.id} value={customer.id}>{customer.companyName}</option>)}
+                    {customers.map((customer) => <option key={customer.id}
+                                                         value={customer.id}>{customer.companyName}</option>)}
                 </select>
             </div>
 
             <div className="col-span-2">
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Description</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.description')}</label>
                 <textarea disabled={isAccepted}
                           className="w-full bg-input-background text-foreground placeholder:text-muted-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none"
                           rows={2} placeholder="What did you do?" value={timesheetEntry.description}

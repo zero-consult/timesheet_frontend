@@ -1,0 +1,93 @@
+{
+  "menu": {
+    "employees": "従業員",
+    "customers": "顧客",
+    "timesheets": "タイムシート",
+    "logout": "ログアウト"
+  },
+  "pagination": {
+    "of": "{{total}} の {{from}} – {{until}}"
+  },
+  "single_timesheet_entry": {
+    "labels": {
+      "customer": "顧客",
+      "date": "日付",
+      "days_selected": "{{count}}件 選択中",
+      "description": "備考・説明",
+      "employee": "従業員",
+      "end_time": "終了時間",
+      "multiple_dates": "選択された日数",
+      "now": "現在",
+      "start_time": "開始時間"
+    },
+    "weekday": {
+      "mo": "月",
+      "tu": "火",
+      "we": "水",
+      "th": "木",
+      "fr": "金",
+      "sa": "土",
+      "su": "日"
+    },
+    "input": {
+      "error": {
+        "start_time_after_end_time": "開始時間は終了時間より前の時刻にしてください",
+        "customer_required": "顧客の選択は必須です",
+        "employee_required": "従業員の選択は必須です",
+        "end_time_required": "終了時間は必須です",
+        "start_time_required": "開始時間は必須です"
+      }
+    },
+    "each_day": "毎日 {{hours}}",
+    "day_overview": "{{days}}日間で合計 {{hours}}"
+  },
+  "timesheetlist": {
+    "card": {
+      "approved": "承認済み",
+      "each_day": "毎日",
+      "in_progress": "進行中",
+      "registrations_one": "登録",
+      "registrations_other": "登録",
+      "this_week": "今週",
+      "total": "合計",
+      "weekday": {
+        "mo": "月",
+        "tu": "火",
+        "we": "水",
+        "th": "木",
+        "fr": "金",
+        "sa": "土",
+        "su": "日"
+      }
+    },
+    "departement": {
+      "design": "デザイン",
+      "engineering": "エンジニアリング",
+      "finance": "財務・経理",
+      "hr": "人事",
+      "marketing": "マーケティング",
+      "operations": "オペレーション"
+    },
+    "filter": {
+      "all_employees": "すべての従業員",
+      "search": "従業員、プロジェクトを検索"
+    },
+    "status": {
+      "all": "すべて",
+      "approved": "承認済み",
+      "in_progress": "進行中",
+      "rejected": "却下"
+    },
+    "register": "時間を登録",
+    "table_headers": {
+      "date": "日付",
+      "employee": "従業員",
+      "customer": "顧客",
+      "time": "時間",
+      "description": "備考・説明",
+      "status": "ステータス",
+      "actions": "操作"
+    },
+    "today": "今日"
+  }
+}

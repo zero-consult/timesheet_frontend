@@ -30,6 +30,7 @@ import {
 } from "../types/timesheet";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import {handleError} from "../redux/error.slice.ts";
+import {useTranslation} from "react-i18next";
 
 const TIMESHEET_STATUS_COLORS: Record<TimesheetStatus, string> = {
     Approved: "bg-emerald-500/15 text-emerald-400",
@@ -57,6 +58,7 @@ function getAvatarColor(name: string) {
 }
 
 function Timesheetlist() {
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const customers = useSelector(selectCustomers);
     const employees = useSelector(selectEmployees);
@@ -72,7 +74,7 @@ function Timesheetlist() {
     // Week range
     const today = moment();
     const dayOfWeek = parseInt(today.format("d"));
-    const weekStart = moment().subtract(dayOfWeek - 1, "days").add(weekOffset * 7, "days");
+    const weekStart = moment().subtract(dayOfWeek === 0 ? 6 : dayOfWeek - 1, "days").add(weekOffset * 7, "days");
     const weekEnd = moment(weekStart).add(6, "days");
 
     const weekDays = Array.from({length: 7}, (_, i) => {
@@ -183,7 +185,7 @@ function Timesheetlist() {
     const approvedHours = filtered.filter((e) => e.status === "Approved").reduce((acc, e) => acc + calcHours(e.startTime, e.endTime), 0);
     const pendingCount = filtered.filter((e) => e.status === "In progress").length;
 
-    const weekLabel = `${weekStart.format("D MMM")} – ${weekEnd.format("D MMM YYYY")}`;
+    const weekLabel = `${weekStart.locale(i18n.resolvedLanguage || "en").format("D MMM")} – ${weekEnd.locale(i18n.resolvedLanguage || "en").format("D MMM YYYY")}`;
 
     // Hours per day for the mini week chart
     const hoursPerDay = weekDays.map((d) => {
@@ -228,7 +230,7 @@ function Timesheetlist() {
                 <div>
                     <h1 className="text-xl font-semibold text-foreground tracking-tight"
                         style={{fontFamily: "'Instrument Sans', sans-serif"}}>
-                        Work hours
+                        {t('menu.timesheets')}
                     </h1>
                     <p className="text-sm text-muted-foreground mt-0.5">{weekLabel}</p>
                 </div>
@@ -245,7 +247,7 @@ function Timesheetlist() {
                             setCurrentPage(1);
                         }}
                                 className="px-3 py-1 rounded text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
-                                style={{fontFamily: "'DM Mono', monospace"}}>Today
+                                style={{fontFamily: "'DM Mono', monospace"}}>{t('timesheetlist.today')}
                         </button>
                         <button onClick={() => {
                             setWeekOffset((w) => w + 1);
@@ -256,7 +258,7 @@ function Timesheetlist() {
                     </div>
                     <Link to={"/timesheets/add"}
                           className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-                        <Plus className="w-4 h-4"/> Register hours
+                        <Plus className="w-4 h-4"/> {t('timesheetlist.register')}
                     </Link>
                 </div>
             </header>
@@ -265,29 +267,29 @@ function Timesheetlist() {
             <div className="px-8 py-5 grid grid-cols-4 gap-4 border-b border-border">
                 <div className="bg-card rounded-lg px-5 py-4 border border-border">
                     <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1"
-                       style={{fontFamily: "'DM Mono', monospace"}}>Total</p>
+                       style={{fontFamily: "'DM Mono', monospace"}}>{t('timesheetlist.card.total')}</p>
                     <p className="text-2xl font-semibold text-foreground"
-                       style={{fontFamily: "'Instrument Sans', sans-serif"}}>{formatHours(totalHours)}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">this week</p>
+                       style={{fontFamily: "'Instrument Sans', sans-serif"}}>{formatHours(totalHours, i18n.resolvedLanguage)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('timesheetlist.card.this_week')}</p>
                 </div>
                 <div className="bg-card rounded-lg px-5 py-4 border border-border">
                     <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1"
-                       style={{fontFamily: "'DM Mono', monospace"}}>Approved</p>
+                       style={{fontFamily: "'DM Mono', monospace"}}>{t('timesheetlist.card.approved')}</p>
                     <p className="text-2xl font-semibold text-foreground"
-                       style={{fontFamily: "'Instrument Sans', sans-serif"}}>{formatHours(approvedHours)}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">approved</p>
+                       style={{fontFamily: "'Instrument Sans', sans-serif"}}>{formatHours(approvedHours, i18n.resolvedLanguage)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('timesheetlist.card.approved')}</p>
                 </div>
                 <div className="bg-card rounded-lg px-5 py-4 border border-border">
                     <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1"
-                       style={{fontFamily: "'DM Mono', monospace"}}>In progress</p>
+                       style={{fontFamily: "'DM Mono', monospace"}}>{t('timesheetlist.card.in_progress')}</p>
                     <p className="text-2xl font-semibold text-foreground"
                        style={{fontFamily: "'Instrument Sans', sans-serif"}}>{pendingCount}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">registrations</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('timesheetlist.card.registrations', {count: pendingCount})}</p>
                 </div>
                 {/* Mini week bar chart */}
                 <div className="bg-card rounded-lg px-5 py-4 border border-border">
                     <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3"
-                       style={{fontFamily: "'DM Mono', monospace"}}>Each day</p>
+                       style={{fontFamily: "'DM Mono', monospace"}}>{t('timesheetlist.card.each_day')}</p>
                     <div className="flex items-end gap-1.5">
                         {weekDays.map((d, i) => {
                             const h = hoursPerDay[i];
@@ -301,9 +303,9 @@ function Timesheetlist() {
                                         backgroundColor: isToday ? "var(--primary)" : "var(--muted)",
                                         minHeight: h > 0 ? "4px" : "2px",
                                         opacity: h > 0 ? 1 : 0.3
-                                    }} title={`${["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"][i]}: ${formatHours(h)}`}/>
+                                    }} title={`${[t('timesheetlist.card.weekday.mo'), t('timesheetlist.card.weekday.tu'), t('timesheetlist.card.weekday.we'), t('timesheetlist.card.weekday.th'), t('timesheetlist.card.weekday.fr'), t('timesheetlist.card.weekday.sa'), t('timesheetlist.card.weekday.su')][i]}: ${formatHours(h)}`}/>
                                     <span className="text-[9px] text-muted-foreground absolute bottom-0"
-                                          style={{fontFamily: "'DM Mono', monospace"}}>{["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"][i]}</span>
+                                          style={{fontFamily: "'DM Mono', monospace"}}>{[t('timesheetlist.card.weekday.mo'), t('timesheetlist.card.weekday.tu'), t('timesheetlist.card.weekday.we'), t('timesheetlist.card.weekday.th'), t('timesheetlist.card.weekday.fr'), t('timesheetlist.card.weekday.sa'), t('timesheetlist.card.weekday.su')][i]}</span>
                                 </div>
                             );
                         })}
@@ -317,7 +319,7 @@ function Timesheetlist() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
                     <input
                         className="w-full bg-input-background text-foreground placeholder:text-muted-foreground text-sm rounded-md pl-9 pr-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
-                        placeholder="Find employee, project" value={search} onChange={(e) => {
+                        placeholder={t('timesheetlist.filter.search')} value={search} onChange={(e) => {
                         setSearch(e.target.value);
                         setCurrentPage(1);
                     }}/>
@@ -328,7 +330,7 @@ function Timesheetlist() {
                     setEmpFilter(e.target.value);
                     setCurrentPage(1);
                 }}>
-                    <option value="All">All employees</option>
+                    <option value="All">{t('timesheetlist.filter.all_employees')}</option>
                     {employees.map((e) => <option key={e.id} value={e.id}>{e.firstName + " " + e.lastName}</option>)}
                 </select>
                 <div className="flex items-center gap-2">
@@ -337,7 +339,7 @@ function Timesheetlist() {
                             setStatusFilter(s as TimesheetStatus | "All");
                             setCurrentPage(1);
                         }}
-                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${statusFilter === s ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"}`}>{s}</button>
+                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${statusFilter === s ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"}`}>{t('timesheetlist.status.' + s.replaceAll(" ", "_").toLowerCase())}</button>
                     ))}
                 </div>
             </div>
@@ -348,8 +350,8 @@ function Timesheetlist() {
                     <thead>
                     <tr className="border-b border-border">
                         {([
-                            ["date", "Date"], ["employeeId", "Employee"], ["customerId", "Customer"],
-                            ["startTime", "Time"], ["description", "Description"], ["status", "Status"],
+                            ["date", t('timesheetlist.table_headers.date')], ["employeeId", t('timesheetlist.table_headers.employee')], ["customerId", t('timesheetlist.table_headers.customer')],
+                            ["startTime", t('timesheetlist.table_headers.time')], ["description", t('timesheetlist.table_headers.description')], ["status", t('timesheetlist.table_headers.status')],
                         ] as [keyof TimesheetEntry, string][]).map(([key, label]) => (
                             <th key={key}
                                 className="text-left py-3 px-3 text-xs font-medium text-muted-foreground uppercase tracking-widest cursor-pointer select-none hover:text-foreground transition-colors"
@@ -360,7 +362,7 @@ function Timesheetlist() {
                             </th>
                         ))}
                         <th className="py-3 px-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-widest"
-                            style={{fontFamily: "'DM Mono', monospace"}}>Actions
+                            style={{fontFamily: "'DM Mono', monospace"}}>{t('timesheetlist.table_headers.actions')}
                         </th>
                     </tr>
                     </thead>
@@ -395,7 +397,7 @@ function Timesheetlist() {
                                                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0 ${getAvatarColor(emp.firstName + " " + emp.lastName)}`}>{getInitials(emp.firstName + " " + emp.lastName)}</div>
                                             <div>
                                                 <p className="font-medium text-foreground text-sm">{emp.firstName + " " + emp.lastName}</p>
-                                                <p className="text-xs text-muted-foreground">{emp.department}</p>
+                                                <p className="text-xs text-muted-foreground">{t('timesheetlist.departement.' + ('' + emp.department).toLowerCase())}</p>
                                             </div>
                                         </div>
                                     )}

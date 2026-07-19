@@ -1,0 +1,93 @@
+{
+  "menu": {
+    "employees": "Employés",
+    "customers": "Clients",
+    "timesheets": "Feuilles de temps",
+    "logout": "Se déconnecter"
+  },
+  "pagination": {
+    "of": "{{from}} – {{until}} sur {{total}}"
+  },
+  "single_timesheet_entry": {
+    "labels": {
+      "customer": "Client",
+      "date": "Date",
+      "days_selected": "{{count}} sélectionnés",
+      "description": "Description",
+      "employee": "Employé",
+      "end_time": "Heure de fin",
+      "multiple_dates": "Jour(s) sélectionné(s)",
+      "now": "Maintenant",
+      "start_time": "Heure de début"
+    },
+    "weekday": {
+      "mo": "Lu",
+      "tu": "Ma",
+      "we": "Me",
+      "th": "Je",
+      "fr": "Ve",
+      "sa": "Sa",
+      "su": "Di"
+    },
+    "input": {
+      "error": {
+        "start_time_after_end_time": "L'heure de début doit être antérieure à l'heure de fin",
+        "customer_required": "Un client est requis",
+        "employee_required": "Un employé est requis",
+        "end_time_required": "L'heure de fin est requise",
+        "start_time_required": "L'heure de début est requise"
+      }
+    },
+    "each_day": "{{hours}} Chaque jour",
+    "day_overview": "{{hours}} au total sur {{days}} jours"
+  },
+  "timesheetlist": {
+    "card": {
+      "approved": "Approuvé",
+      "each_day": "Chaque jour",
+      "in_progress": "En cours",
+      "registrations_one": "Enregistrement",
+      "registrations_other": "Enregistrements",
+      "this_week": "Cette semaine",
+      "total": "Total",
+      "weekday": {
+        "mo": "Lu",
+        "tu": "Ma",
+        "we": "Me",
+        "th": "Je",
+        "fr": "Ve",
+        "sa": "Sa",
+        "su": "Di"
+      }
+    },
+    "departement": {
+      "design": "Design",
+      "engineering": "Ingénierie",
+      "finance": "Finance",
+      "hr": "RH",
+      "marketing": "Marketing",
+      "operations": "Opérations"
+    },
+    "filter": {
+      "all_employees": "Tous les employés",
+      "search": "Trouver un employé, un projet"
+    },
+    "status": {
+      "all": "Tous",
+      "approved": "Approuvé",
+      "in_progress": "En cours",
+      "rejected": "Rejeté"
+    },
+    "register": "Enregistrer des heures",
+    "table_headers": {
+      "date": "Date",
+      "employee": "Employé",
+      "customer": "Client",
+      "time": "Heures",
+      "description": "Description",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "today": "Aujourd'hui"
+  }
+}

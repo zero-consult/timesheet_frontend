@@ -1,4 +1,5 @@
 import {ChevronDown, ChevronUp} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 export const PAGE_SIZE = 5;
 
@@ -9,6 +10,8 @@ export type PaginationProps = {
 }
 
 function Pagination({ page, total, onChange }: PaginationProps) {
+    const {t} = useTranslation()
+
     const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
     if (pages <= 1) return null;
 
@@ -28,7 +31,7 @@ function Pagination({ page, total, onChange }: PaginationProps) {
     return (
         <div className="flex items-center justify-between px-8 py-4 border-t border-border">
             <p className="text-xs text-muted-foreground" style={{ fontFamily: "'DM Mono', monospace" }}>
-                {Math.min((page - 1) * PAGE_SIZE + 1, total)}–{Math.min(page * PAGE_SIZE, total)} van {total}
+                {t('pagination.of', {from: Math.min((page - 1) * PAGE_SIZE + 1, total), until: Math.min(page * PAGE_SIZE, total), total: total})}
             </p>
             <div className="flex items-center gap-1">
                 <button

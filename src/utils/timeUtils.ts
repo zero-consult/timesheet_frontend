@@ -6,8 +6,17 @@ export function calcHours(start: string, end: string): number {
     return Math.max(0, Math.round(diff / 60 * 10) / 10);
 }
 
-export function formatHours(h: number) {
+export function formatHours(h: number, locale?: string) {
     const whole = Math.floor(h);
     const mins = Math.round((h - whole) * 60);
-    return mins > 0 ? `${whole}h ${mins}m` : `${whole}h`;
+    let hourText = "h"
+    let minText = "m"
+    if (locale === "nl") {
+        hourText = "u";
+    }
+    if (locale === "jp") {
+        hourText = "時間";
+        minText = "分";
+    }
+    return mins > 0 ? `${whole}${hourText} ${mins}${minText}` : `${whole}${hourText}`;
 }

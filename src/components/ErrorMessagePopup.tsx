@@ -9,7 +9,7 @@ function ErrorMessagePopup() {
     return <> {
         errorMessage.visible ?
             <div
-                className="fixed flex-row top-0 right-0 p-5 m-5 border-accent bg-input-background rounded-md border border-border">
+                className="z-50 fixed flex-row top-0 right-0 p-5 m-5 border-accent bg-input-background rounded-md border border-border">
                 <span className="block w-full text-primary">{errorMessage.title}: </span>
                 <span className="block w-full">{errorMessage.message}</span>
                 <span className="absolute top-0 right-0 p-2"><X

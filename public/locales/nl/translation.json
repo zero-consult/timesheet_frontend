@@ -1,0 +1,85 @@
+{
+  "menu": {
+    "employees": "Werknemers",
+    "customers": "Klanten",
+    "timesheets": "Uurroosters",
+    "logout": "Log uit"
+  },
+  "pagination": {
+    "of": "{{from}} – {{until}} van {{total}}"
+  },
+  "single_timesheet_entry": {
+    "labels": {
+      "customer": "Klant",
+      "date": "Datum",
+      "days_selected": "{{count}} geselecteerd",
+      "description": "Omschrijving",
+      "employee": "Werknemer",
+      "end_time": "Eind tijd",
+      "multiple_dates": "Dag(en) geselecteerd",
+      "now": "Nu",
+      "start_time": "Start tijd"
+    },
+    "weekday": {
+      "mo": "Ma",
+      "tu": "Di",
+      "we": "Wo",
+      "th": "Do",
+      "fr": "Vr",
+      "sa": "Za",
+      "su": "Zo"
+    },
+    "input": {
+      "error": {
+        "start_time_after_end_time": "Start tijd moet voor de eind tijd zijn.",
+        "customer_required": "Een klant is vereist.",
+        "employee_required": "Een werknemer is vereist.",
+        "end_time_required": "Eind tijd is vereist.",
+        "start_time_required": "Start tijd is vereist."
+      }
+    },
+    "each_day": "{{hours}} per dag",
+    "day_overview": "{{hours}} in totaal over {{days}} dagen"
+  },
+  "timesheetlist": {
+    "card": {
+      "approved": "Goedgekeurd",
+      "each_day": "Per dag",
+      "in_progress": "In behandeling",
+      "registrations_one": "Registratie",
+      "registrations_other": "Registraties",
+      "this_week": "Deze week",
+      "total": "Totaal",
+      "weekday": {
+        "mo": "Ma",
+        "tu": "De",
+        "we": "Wo",
+        "th": "Do",
+        "fr": "Vr",
+        "sa": "Za",
+        "su": "Zo"
+      }
+    },
+    "filter": {
+      "all_employees": "Alle werknemers",
+      "search": "Zoek werknemer, project"
+    },
+    "status": {
+      "all": "Allemaal",
+      "approved": "Goedgekeurd",
+      "in_progress": "In behandeling",
+      "rejected": "Geweigerd"
+    },
+    "register": "Registreer uren",
+    "table_headers": {
+      "date": "Datum",
+      "employee": "Werknemer",
+      "customer": "Klant",
+      "time": "Tijd",
+      "description": "Omschrijving",
+      "status": "Status",
+      "actions": "Acties"
+    },
+    "today": "Vandaag"
+  }
+}
