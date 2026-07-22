@@ -26,3 +26,6 @@ dist-ssr
 # IDL generated types
 src/types/people/
 src/types/timesheet/
+
+# Coverage
+coverage/

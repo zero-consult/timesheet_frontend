@@ -39,7 +39,8 @@
       }
     },
     "each_day": "{{hours}} Each day",
-    "day_overview": "{{hours}} total over {{days}} days"
+    "day_overview": "{{hours}} total over {{days}} days",
+    "save": "Save"
   },
   "timesheetlist": {
     "card": {
@@ -79,6 +80,9 @@
       "rejected": "Rejected"
     },
     "register": "Register hours",
+    "table": {
+      "empty": "No timesheet entries found for this week."
+    },
     "table_headers": {
       "date": "Date",
       "employee": "Employee",

@@ -39,7 +39,8 @@
       }
     },
     "each_day": "毎日 {{hours}}",
-    "day_overview": "{{days}}日間で合計 {{hours}}"
+    "day_overview": "{{days}}日間で合計 {{hours}}",
+    "register": "時間を登録"
   },
   "timesheetlist": {
     "card": {
@@ -72,13 +73,16 @@
       "all_employees": "すべての従業員",
       "search": "従業員、プロジェクトを検索"
     },
+    "save": "保存",
     "status": {
       "all": "すべて",
       "approved": "承認済み",
       "in_progress": "進行中",
       "rejected": "却下"
     },
-    "register": "時間を登録",
+    "table": {
+      "empty": "今週のタイムシートの時間が見つかりませんでした。"
+    },
     "table_headers": {
       "date": "日付",
       "employee": "従業員",

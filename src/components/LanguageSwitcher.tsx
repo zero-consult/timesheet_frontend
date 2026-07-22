@@ -10,6 +10,7 @@ function LanguageSwitcher() {
     const {i18n} = useTranslation();
 
     useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         cookies.get('language') ? setLanguage(cookies.get('language')) : setLanguage("en");
     }, [])
 

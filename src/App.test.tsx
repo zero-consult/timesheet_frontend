@@ -29,7 +29,6 @@ vi.mock('axios', () => {
 });
 
 vi.mock('react-i18next', async (importOriginal) => {
-
     const actual = await importOriginal<typeof import('react-i18next')>();
 
     return {

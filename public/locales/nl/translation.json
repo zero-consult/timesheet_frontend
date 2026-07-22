@@ -39,7 +39,8 @@
       }
     },
     "each_day": "{{hours}} per dag",
-    "day_overview": "{{hours}} in totaal over {{days}} dagen"
+    "day_overview": "{{hours}} in totaal over {{days}} dagen",
+    "save": "Opslaan"
   },
   "timesheetlist": {
     "card": {
@@ -71,6 +72,9 @@
       "rejected": "Geweigerd"
     },
     "register": "Registreer uren",
+    "table": {
+      "empty": "Geen timesheet uren gevonden voor deze week."
+    },
     "table_headers": {
       "date": "Datum",
       "employee": "Werknemer",

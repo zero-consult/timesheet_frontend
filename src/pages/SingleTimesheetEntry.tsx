@@ -95,13 +95,6 @@ function SingleTimesheetEntry() {
             }));
             return;
         }
-        if (timesheetEntry.endTime.trim().length === 0) {
-            dispatch(showError({
-                title: "Input error",
-                message: t('single_timesheet_entry.input.error.end_time_required')
-            }));
-            return;
-        }
         if (timesheetEntry.employeeId.trim().length === 0) {
             dispatch(showError({
                 title: "Input error",
@@ -143,7 +136,7 @@ function SingleTimesheetEntry() {
         <div className="grid grid-cols-2 gap-4 p-5">
             <div className="col-span-2">
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.employee')}</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.employee')} *</label>
                 <select disabled={isAccepted}
                         className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
                         value={timesheetEntry.employeeId} onChange={(e) => dispatch(updateEmployeeId(e.target.value))}>
@@ -154,7 +147,7 @@ function SingleTimesheetEntry() {
             <div className="col-span-2">
                 <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        {typeof timesheetEntryId !== "undefined" ? t('single_timesheet_entry.labels.date') : `${t('single_timesheet_entry.labels.multiple_dates')}${selectedDates.length > 1 ? ` · ${t('single_timesheet_entry.labels.days_selected', {count: selectedDates.length})}` : ""}`}
+                        {typeof timesheetEntryId !== "undefined" ? t('single_timesheet_entry.labels.date') + " *" : `${t('single_timesheet_entry.labels.multiple_dates') + " *"}${selectedDates.length > 1 ? ` · ${t('single_timesheet_entry.labels.days_selected', {count: selectedDates.length})}` : ""}`}
                     </label>
                     {typeof timesheetEntryId === "undefined" && (() => {
                         const mwStart = moment();
@@ -238,7 +231,7 @@ function SingleTimesheetEntry() {
 
             <div>
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.start_time')}</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.start_time')} *</label>
                 <input disabled={isAccepted} type="time"
                        className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
                        value={timesheetEntry.startTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({
@@ -248,7 +241,7 @@ function SingleTimesheetEntry() {
             </div>
             <div>
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.end_time')}</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.end_time')} *</label>
                 <input disabled={isAccepted} type="time"
                        className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
                        value={timesheetEntry.endTime} onChange={(e) => dispatch(loadSingleTimesheetEntry({
@@ -262,7 +255,8 @@ function SingleTimesheetEntry() {
                     className="col-span-2 px-3 py-2 flex items-center gap-2 text-sm text-fg-warning rounded-base bg-primary/10 bg-warning-soft rounded-md border border-primary/20"
                     role="alert">
                     <Info className="w-4 h-4 text-primary flex-shrink-0"/>
-                    <span className="text-primary font-medium">{t('single_timesheet_entry.error.start_time_after_end_time')}</span>
+                    <span
+                        className="text-primary font-medium">{t('single_timesheet_entry.input.error.start_time_after_end_time')}</span>
                 </div>
                 : <></>}
 
@@ -274,7 +268,10 @@ function SingleTimesheetEntry() {
                     {t('single_timesheet_entry.each_day', {hours: formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime), i18n.resolvedLanguage)})}
                         {typeof timesheetEntryId === "undefined" && selectedDates.length > 1 && (
                             <span className="text-primary/70 font-normal ml-1.5">
-                        · {t('single_timesheet_entry.day_overview', { hours: formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime) * selectedDates.length, i18n.resolvedLanguage), days: selectedDates.length})}
+                        · {t('single_timesheet_entry.day_overview', {
+                                hours: formatHours(calcHours(timesheetEntry.startTime, timesheetEntry.endTime) * selectedDates.length, i18n.resolvedLanguage),
+                                days: selectedDates.length
+                            })}
                       </span>
                         )}
                   </span>
@@ -283,7 +280,7 @@ function SingleTimesheetEntry() {
 
             <div className="col-span-2">
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.customer')}</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.customer')} *</label>
                 <select disabled={isAccepted}
                         className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
                         value={timesheetEntry.customerId} onChange={(e) => dispatch(updateCustomerId(e.target.value))}>
@@ -307,7 +304,7 @@ function SingleTimesheetEntry() {
                 <div className="col-span-2">
                     <button onClick={() => saveTimesheetEntries()}
                             className="cursor-pointer w-full flex items-center gap-2 px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-                        <Save className="w-4 h-4"/> Save
+                        <Save className="w-4 h-4"/>{t('single_timesheet_entry.save')}
                     </button>
                 </div>
             }

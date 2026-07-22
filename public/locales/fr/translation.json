@@ -39,7 +39,8 @@
       }
     },
     "each_day": "{{hours}} Chaque jour",
-    "day_overview": "{{hours}} au total sur {{days}} jours"
+    "day_overview": "{{hours}} au total sur {{days}} jours",
+    "save": "Enregistrer"
   },
   "timesheetlist": {
     "card": {
@@ -79,6 +80,9 @@
       "rejected": "Rejeté"
     },
     "register": "Enregistrer des heures",
+    "table": {
+      "empty": "Aucune heure de feuille de temps trouvée pour cette semaine."
+    },
     "table_headers": {
       "date": "Date",
       "employee": "Employé",
