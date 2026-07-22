@@ -10,8 +10,8 @@
     "build": "npm run generatePeople && npm run generateTimesheet && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "test": "vitest --no-color",
+    "coverage": "vitest run --coverage --no-color"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
