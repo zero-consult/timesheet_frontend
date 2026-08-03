@@ -64,7 +64,10 @@ exports[`render single timesheet page 1`] = `
             class="grid grid-cols-7 gap-1.5"
           >
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              disabled=""
               type="button"
             >
               <span
@@ -82,7 +85,10 @@ exports[`render single timesheet page 1`] = `
               />
             </button>
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              disabled=""
               type="button"
             >
               <span
@@ -97,7 +103,10 @@ exports[`render single timesheet page 1`] = `
               </span>
             </button>
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              disabled=""
               type="button"
             >
               <span
@@ -112,7 +121,10 @@ exports[`render single timesheet page 1`] = `
               </span>
             </button>
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              disabled=""
               type="button"
             >
               <span
@@ -127,7 +139,10 @@ exports[`render single timesheet page 1`] = `
               </span>
             </button>
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+              disabled=""
               type="button"
             >
               <span
@@ -142,7 +157,10 @@ exports[`render single timesheet page 1`] = `
               </span>
             </button>
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+              disabled=""
               type="button"
             >
               <span
@@ -157,7 +175,10 @@ exports[`render single timesheet page 1`] = `
               </span>
             </button>
             <button
-              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+              class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+              disabled=""
               type="button"
             >
               <span
@@ -229,6 +250,35 @@ exports[`render single timesheet page 1`] = `
           >
             single_timesheet_entry.each_day
           </span>
+        </div>
+        <div
+          class="col-span-2"
+        >
+          <label
+            class="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide"
+          >
+            single_timesheet_entry.labels.type
+             *
+          </label>
+          <select
+            class="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
+          >
+            <option
+              value="Work"
+            >
+              single_timesheet_entry.type.work
+            </option>
+            <option
+              value="Holiday"
+            >
+              single_timesheet_entry.type.holiday
+            </option>
+            <option
+              value="Sickness"
+            >
+              single_timesheet_entry.type.sickness
+            </option>
+          </select>
         </div>
         <div
           class="col-span-2"
@@ -320,7 +370,10 @@ exports[`render single timesheet page 1`] = `
           class="grid grid-cols-7 gap-1.5"
         >
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            disabled=""
             type="button"
           >
             <span
@@ -338,7 +391,10 @@ exports[`render single timesheet page 1`] = `
             />
           </button>
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            disabled=""
             type="button"
           >
             <span
@@ -353,7 +409,10 @@ exports[`render single timesheet page 1`] = `
             </span>
           </button>
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            disabled=""
             type="button"
           >
             <span
@@ -368,7 +427,10 @@ exports[`render single timesheet page 1`] = `
             </span>
           </button>
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            disabled=""
             type="button"
           >
             <span
@@ -383,7 +445,10 @@ exports[`render single timesheet page 1`] = `
             </span>
           </button>
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-input-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+            disabled=""
             type="button"
           >
             <span
@@ -398,7 +463,10 @@ exports[`render single timesheet page 1`] = `
             </span>
           </button>
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+            disabled=""
             type="button"
           >
             <span
@@ -413,7 +481,10 @@ exports[`render single timesheet page 1`] = `
             </span>
           </button>
           <button
-            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+            class="flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        cursor-not-allowed 
+                                        border-border bg-muted/30 text-muted-foreground/50 hover:bg-muted/60"
+            disabled=""
             type="button"
           >
             <span
@@ -485,6 +556,35 @@ exports[`render single timesheet page 1`] = `
         >
           single_timesheet_entry.each_day
         </span>
+      </div>
+      <div
+        class="col-span-2"
+      >
+        <label
+          class="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide"
+        >
+          single_timesheet_entry.labels.type
+           *
+        </label>
+        <select
+          class="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
+        >
+          <option
+            value="Work"
+          >
+            single_timesheet_entry.type.work
+          </option>
+          <option
+            value="Holiday"
+          >
+            single_timesheet_entry.type.holiday
+          </option>
+          <option
+            value="Sickness"
+          >
+            single_timesheet_entry.type.sickness
+          </option>
+        </select>
       </div>
       <div
         class="col-span-2"

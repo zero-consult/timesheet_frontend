@@ -1,0 +1,210 @@
+openapi: 3.1.0
+info:
+  title: Zero consult invoicing - OpenAPI 3.2
+  description: ''
+  version: 1.0.0
+paths:
+  /invoicingMonth/payslip:
+    get:
+      tags:
+        - invoicingMonth
+      summary: Get the current payslipMonth
+      operationId: getCurrentPayslipMonth
+      responses:
+        '200':
+          description: 'Current payslip month'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /invoicingMonth/payslip/close:
+    get:
+      tags:
+        - invoicingMonth
+      summary: Close the current invoicingMonth
+      operationId: closeCurrentPayslipMonth
+      responses:
+        '200':
+          description: 'New payslip month'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /payslips:
+    get:
+      tags:
+        - payslip
+      summary: Get the list of payslips for a given period
+      operationId: payslipsList
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: until
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: employeeId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of timesheet entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payslip'
+    post:
+      tags:
+        - payslip
+      summary: Add a new payslip entry
+      operationId: generatePayslip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payslip'
+      responses:
+        '201':
+          description: Payslip created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payslip'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /payslips/{id}:
+    delete:
+      tags:
+        - payslip
+      summary: Delete a payslip
+      operationId: deletePayslip
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Payslip deleted
+    get:
+      tags:
+        - payslip
+      summary: Get a payslip
+      operationId: getPayslip
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payslip found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payslip'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /payslips/{id}/file:
+    get:
+      tags:
+        - payslip
+      summary: Get the payslip file
+      operationId: getPayslipFile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payslip file found
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /payslips/month:
+    get:
+      tags:
+        - payslip
+      summary: Get the current payslip month
+      operationId: getPayslipMonth
+      responses:
+        '200':
+          description: Current payslip month
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  schemas:
+    Allowance:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+        id:
+          type: string
+        label:
+          type: string
+      required:
+        - amount
+        - label
+    Payslip:
+      type: object
+      properties:
+        allowances:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allowance'
+        employeeId:
+          type: string
+        grossSalary:
+          type: number
+          format: double
+        id:
+          type: string
+        month:
+          type: string
+        payslipFile:
+          type: string
+        taxRate:
+          type: number
+          format: double
+      required:
+        - allowances
+        - employeeId
+        - grossSalary
+        - month
+        - taxRate

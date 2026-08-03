@@ -1,9 +1,15 @@
 {
   "menu": {
-    "employees": "Employés",
     "customers": "Clients",
-    "timesheets": "Feuilles de temps",
-    "logout": "Se déconnecter"
+    "employees": "Employés",
+    "fin": "Fin",
+    "financial": "Financier",
+    "invoices": "Factures",
+    "logout": "Se déconnecter",
+    "payslips": "Fiches de paie",
+    "per": "Per",
+    "personnel": "Personnel",
+    "timesheets": "Feuilles de temps"
   },
   "pagination": {
     "of": "{{from}} – {{until}} sur {{total}}"
@@ -18,7 +24,8 @@
       "end_time": "Heure de fin",
       "multiple_dates": "Jour(s) sélectionné(s)",
       "now": "Maintenant",
-      "start_time": "Heure de début"
+      "start_time": "Heure de début",
+      "type": "Type"
     },
     "weekday": {
       "mo": "Lu",
@@ -40,7 +47,12 @@
     },
     "each_day": "{{hours}} Chaque jour",
     "day_overview": "{{hours}} au total sur {{days}} jours",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "type": {
+      "work": "Travail",
+      "holiday": "Congé",
+      "sickness": "Maladie"
+    }
   },
   "timesheetlist": {
     "card": {

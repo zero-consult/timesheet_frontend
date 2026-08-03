@@ -4,8 +4,16 @@ import type {RootState} from "./store.ts";
 import type {Customer} from "../types/people";
 
 const EMPTY_CUST: Customer = {
-    city: "", companyName: "",contactPersonFirstName: "", contactPersonLastName: "", sector: "Tech",
-    email: "", phone: "", startDate: moment().valueOf(), status: "Prospect",
+    city: "",
+    companyName: "",
+    contactPersonFirstName: "",
+    contactPersonLastName: "",
+    email: "",
+    hiringRatePerHour: 50,
+    phone: "",
+    sector: "Tech",
+    startDate: moment().valueOf(),
+    status: "Prospect",
 };
 export type CustomerState = {
     customers: Customer[]

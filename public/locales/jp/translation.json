@@ -1,9 +1,15 @@
 {
   "menu": {
-    "employees": "従業員",
     "customers": "顧客",
-    "timesheets": "タイムシート",
-    "logout": "ログアウト"
+    "employees": "従業員",
+    "fin": "金融",
+    "financial": "金融",
+    "invoices": "請求書",
+    "logout": "ログアウト",
+    "payslips": "給与明細",
+    "per": "人員",
+    "personnel": "人員",
+    "timesheets": "タイムシート"
   },
   "pagination": {
     "of": "{{total}} の {{from}} – {{until}}"
@@ -18,7 +24,8 @@
       "end_time": "終了時間",
       "multiple_dates": "選択された日数",
       "now": "現在",
-      "start_time": "開始時間"
+      "start_time": "開始時間",
+      "type": "タイプ"
     },
     "weekday": {
       "mo": "月",
@@ -40,7 +47,13 @@
     },
     "each_day": "毎日 {{hours}}",
     "day_overview": "{{days}}日間で合計 {{hours}}",
-    "register": "時間を登録"
+    "register": "時間を登録",
+    "save": "保存",
+    "type": {
+      "work": "仕事",
+      "holiday": "休日",
+      "sickness": "病気"
+    }
   },
   "timesheetlist": {
     "card": {

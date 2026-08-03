@@ -28,6 +28,7 @@ function LanguageSwitcher(props: LanguageSwitcherProps) {
             .filter((language) => !props.compact || language === i18n.resolvedLanguage)
             .map(((language) =>
                     <button
+                        key={language}
                         className={"grow " + " " + (i18n.resolvedLanguage === language ? "text-primary" : "")}
                         style={{fontWeight: i18n.resolvedLanguage === language ? 'bold' : 'normal'}}
                         onClick={() => setLanguage(language)}>

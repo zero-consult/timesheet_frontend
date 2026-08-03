@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Zero consult timesheet - OpenAPI 3.2
   description: ''
@@ -23,6 +23,11 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: employeeId
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: A list of timesheet entries
@@ -50,6 +55,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimesheetEntry'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '406':
+          description: 'Invoicing Month already closed'
+          content:
+            text/plain:
+              schema:
+                type: string
   /timesheets/{id}:
     delete:
       tags:
@@ -65,6 +82,18 @@ paths:
       responses:
         '204':
           description: Timesheet entry deleted
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '406':
+          description: 'Timesheet entry may not be in accepted state'
+          content:
+            text/plain:
+              schema:
+                type: string
     get:
       tags:
         - timesheet
@@ -83,6 +112,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimesheetEntry'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
     put:
       tags:
         - timesheet
@@ -107,6 +142,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimesheetEntry'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
 components:
   schemas:
     TimesheetEntry:
@@ -134,15 +175,24 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/TimesheetStatus'
+        type:
+          $ref: '#/components/schemas/TimesheetType'
       required:
         - date
         - startTime
         - endTime
         - employeeId
-        - customerId
+        - status
+        - type
     TimesheetStatus:
       type: string
       enum:
         - In progress
         - Approved
         - Rejected
+    TimesheetType:
+      type: string
+      enum:
+        - Work
+        - Holiday
+        - Sickness

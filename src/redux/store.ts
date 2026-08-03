@@ -3,6 +3,7 @@ import employeeSlice from "./employee.slice.ts";
 import timesheetSlice from "./timesheet.slice.ts";
 import customerSlice from "./customer.slice.ts";
 import errorSlice from "./error.slice.ts";
+import invoicingMonthSlice from "./invoicingMonth.slice.ts";
 
 
 const store = configureStore({
@@ -10,6 +11,7 @@ const store = configureStore({
         customer: customerSlice.reducer,
         employee: employeeSlice.reducer,
         error: errorSlice.reducer,
+        invoicingMonth: invoicingMonthSlice.reducer,
         timesheet: timesheetSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

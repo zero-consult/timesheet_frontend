@@ -170,7 +170,7 @@ test('sort on customer', async () => {
         expect(tableItem.length).toEqual(3);
     });
 
-    const customerHeader = await renderResult.findByText('timesheetlist.table_headers.customer :');
+    const customerHeader = await renderResult.findByText('timesheetlist.table_headers.customer');
     fireEvent.click(customerHeader);
     expect(renderResult).toMatchSnapshot();
     fireEvent.click(customerHeader);
@@ -191,7 +191,7 @@ test('sort on employee', async () => {
     const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     waitForDataToBeLoaded(renderResult)
 
-    const customerHeader = await renderResult.findByText('timesheetlist.table_headers.employee :');
+    const customerHeader = await renderResult.findByText('timesheetlist.table_headers.employee');
     fireEvent.click(customerHeader);
     expect(renderResult).toMatchSnapshot();
     fireEvent.click(customerHeader);
@@ -239,7 +239,7 @@ test('approve timesheet entry', async () => {
     expect(renderResult).toMatchSnapshot();
 })
 
-test('approve timesheet entry', async () => {
+test('reject timesheet entry', async () => {
     const axiosCalls = axios.request as MockedFunction<typeof axios.request>;
     axiosCalls.mockResolvedValueOnce(
         {data: [EMP_1] as Employee[]}

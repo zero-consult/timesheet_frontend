@@ -1,9 +1,15 @@
 {
   "menu": {
-    "employees": "Werknemers",
     "customers": "Klanten",
-    "timesheets": "Uurroosters",
-    "logout": "Log uit"
+    "employees": "Werknemers",
+    "fin": "Fin",
+    "financial": "Financieel",
+    "invoices": "Facturen",
+    "logout": "Log uit",
+    "payslips": "Loonfiches",
+    "per": "Per",
+    "personnel": "Personeel",
+    "timesheets": "Uurroosters"
   },
   "pagination": {
     "of": "{{from}} – {{until}} van {{total}}"
@@ -18,7 +24,8 @@
       "end_time": "Eind tijd",
       "multiple_dates": "Dag(en) geselecteerd",
       "now": "Nu",
-      "start_time": "Start tijd"
+      "start_time": "Start tijd",
+      "type": "Type"
     },
     "weekday": {
       "mo": "Ma",
@@ -40,7 +47,12 @@
     },
     "each_day": "{{hours}} per dag",
     "day_overview": "{{hours}} in totaal over {{days}} dagen",
-    "save": "Opslaan"
+    "save": "Opslaan",
+    "type": {
+      "work": "Werk",
+      "holiday": "Vakantie",
+      "sickness": "Ziekte"
+    }
   },
   "timesheetlist": {
     "card": {

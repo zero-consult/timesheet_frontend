@@ -25,6 +25,7 @@ dist-ssr
 
 # IDL generated types
 src/types/people/
+src/types/invoices/
 src/types/timesheet/
 
 # Coverage

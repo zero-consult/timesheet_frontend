@@ -11,7 +11,8 @@ const EMPTY_TIMESHEET_ENTRY: TimesheetEntry = {
     employeeId: "",
     status: "In progress",
     createdAt: moment().valueOf(),
-    description: ""
+    description: "",
+    type: "Work"
 };
 export type TimesheetState = {
     timesheetEntries: TimesheetEntry[]

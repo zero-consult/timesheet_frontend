@@ -6,19 +6,7 @@ import {Configuration, CustomerApiFp, EmployeeApiFp} from "../types/people";
 import {PEOPLE_BACKEND_HOST, TIMESHEET_BACKEND_HOST} from "../Constants.ts";
 import axios from "axios";
 import {Link} from "react-router";
-import {
-    AlertCircle,
-    Check,
-    CheckCircle2,
-    Pencil,
-    Plus,
-    Search,
-    SortAscIcon,
-    SortDesc,
-    Timer,
-    Trash2,
-    X
-} from "lucide-react";
+import {AlertCircle, Check, CheckCircle2, Pencil, Plus, Search, Timer, Trash2, X} from "lucide-react";
 import {calcHours, formatHours} from "../utils/timeUtils.ts";
 import moment from "moment";
 import {loadTimesheetEntries, selectTimesheetEntries} from "../redux/timesheet.slice.ts";
@@ -26,11 +14,12 @@ import {
     TimesheetApiFp,
     type TimesheetEntry,
     type TimesheetStatus,
-    TimesheetStatus as TimesheetEntryStatus
+    TimesheetStatus as TimesheetEntryStatus, TimesheetType
 } from "../types/timesheet";
 import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import {handleError} from "../redux/error.slice.ts";
 import {useTranslation} from "react-i18next";
+import SortIcon from "../components/SortIcon.tsx";
 
 const TIMESHEET_STATUS_COLORS: Record<TimesheetStatus, string> = {
     Approved: "bg-emerald-500/15 text-emerald-400",
@@ -86,7 +75,7 @@ function Timesheetlist() {
         try {
             const employeeListResponse = await employeeList(axios);
             dispatch(loadEmployees(employeeListResponse.data));
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -96,7 +85,7 @@ function Timesheetlist() {
         try {
             const customerListResponse = await customerList(axios);
             dispatch(loadCustomers(customerListResponse.data));
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -106,7 +95,7 @@ function Timesheetlist() {
         try {
             const timesheetEntryListResponse = await timesheetEntryList(axios);
             dispatch(loadTimesheetEntries(timesheetEntryListResponse.data));
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -199,7 +188,7 @@ function Timesheetlist() {
         try {
             await deleteTimesheetEntry(axios);
             fetchTimesheetEntries();
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -209,7 +198,7 @@ function Timesheetlist() {
         try {
             await updateTimesheetEntry(axios);
             fetchTimesheetEntries();
-        } catch(error) {
+        } catch (error) {
             dispatch(handleError(error))
         }
     }
@@ -303,7 +292,8 @@ function Timesheetlist() {
                                         backgroundColor: isToday ? "var(--primary)" : "var(--muted)",
                                         minHeight: h > 0 ? "4px" : "2px",
                                         opacity: h > 0 ? 1 : 0.3
-                                    }} title={`${[t('timesheetlist.card.weekday.mo'), t('timesheetlist.card.weekday.tu'), t('timesheetlist.card.weekday.we'), t('timesheetlist.card.weekday.th'), t('timesheetlist.card.weekday.fr'), t('timesheetlist.card.weekday.sa'), t('timesheetlist.card.weekday.su')][i]}: ${formatHours(h)}`}/>
+                                    }}
+                                         title={`${[t('timesheetlist.card.weekday.mo'), t('timesheetlist.card.weekday.tu'), t('timesheetlist.card.weekday.we'), t('timesheetlist.card.weekday.th'), t('timesheetlist.card.weekday.fr'), t('timesheetlist.card.weekday.sa'), t('timesheetlist.card.weekday.su')][i]}: ${formatHours(h)}`}/>
                                     <span className="text-[9px] text-muted-foreground absolute bottom-0"
                                           style={{fontFamily: "'DM Mono', monospace"}}>{[t('timesheetlist.card.weekday.mo'), t('timesheetlist.card.weekday.tu'), t('timesheetlist.card.weekday.we'), t('timesheetlist.card.weekday.th'), t('timesheetlist.card.weekday.fr'), t('timesheetlist.card.weekday.sa'), t('timesheetlist.card.weekday.su')][i]}</span>
                                 </div>
@@ -358,8 +348,11 @@ function Timesheetlist() {
                                 className="text-left py-3 px-3 text-xs font-medium text-muted-foreground uppercase tracking-widest cursor-pointer select-none hover:text-foreground transition-colors"
                                 style={{fontFamily: "'DM Mono', monospace"}} onClick={() => handleSort(key)}>
                                 <span
-                                    className="inline-flex items-center gap-1">{label}{(sortKey === key ? (sortDir === "asc" ?
-                                    <SortAscIcon/> : <SortDesc/>) : <></>)} :</span>
+                                    className="inline-flex items-center gap-1">
+                                    {label}
+                                    <SortIcon active={sortKey === key}
+                                              dir={sortDir}/>
+                                </span>
                             </th>
                         ))}
                         <th className="py-3 px-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-widest"
@@ -370,7 +363,8 @@ function Timesheetlist() {
                     <tbody>
                     {filtered.length === 0 && (
                         <tr>
-                            <td colSpan={7} className="py-16 text-center text-muted-foreground text-sm">{t('timesheetlist.table.empty')}
+                            <td colSpan={7}
+                                className="py-16 text-center text-muted-foreground text-sm">{t('timesheetlist.table.empty')}
                             </td>
                         </tr>
                     )}
@@ -405,7 +399,7 @@ function Timesheetlist() {
                                 </td>
                                 <td className="py-3.5 px-3">
                                     <span
-                                        className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">{customers.filter((c) => c.id === entry.customerId).map((c) => c.companyName).join(", ")}</span>
+                                        className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">{entry.type === TimesheetType.Work ? customers.filter((c) => c.id === entry.customerId).map((c) => c.companyName).join(", ") : entry.type}</span>
                                 </td>
                                 <td className="py-3.5 px-3"
                                     style={{fontFamily: "'DM Mono', monospace", fontSize: "0.8rem"}}>

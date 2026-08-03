@@ -1,9 +1,15 @@
 {
   "menu": {
-    "employees": "Employees",
     "customers": "Customers",
-    "timesheets": "Timesheets",
-    "logout": "Log out"
+    "employees": "Employees",
+    "fin": "Fin",
+    "financial": "Financial",
+    "invoices": "Invoices",
+    "logout": "Log out",
+    "payslips": "Payslips",
+    "per": "Per",
+    "personnel": "Personnel",
+    "timesheets": "Timesheets"
   },
   "pagination": {
     "of": "{{from}} – {{until}} van {{total}}"
@@ -18,7 +24,8 @@
       "end_time": "End time",
       "multiple_dates": "Day(s) selected",
       "now": "Now",
-      "start_time": "Start time"
+      "start_time": "Start time",
+      "type": "Type"
     },
     "weekday": {
       "mo": "Mo",
@@ -40,7 +47,12 @@
     },
     "each_day": "{{hours}} Each day",
     "day_overview": "{{hours}} total over {{days}} days",
-    "save": "Save"
+    "save": "Save",
+    "type": {
+      "work": "Work",
+      "holiday": "Holiday",
+      "sickness": "Sickness"
+    }
   },
   "timesheetlist": {
     "card": {

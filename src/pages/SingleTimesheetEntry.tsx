@@ -1,11 +1,11 @@
 import {Configuration, CustomerApiFp, EmployeeApiFp} from "../types/people";
-import {PEOPLE_BACKEND_HOST, TIMESHEET_BACKEND_HOST} from "../Constants.ts";
+import {INVOICES_BACKEND_HOST, PEOPLE_BACKEND_HOST, TIMESHEET_BACKEND_HOST} from "../Constants.ts";
 import axios from "axios";
 import {loadEmployees, selectEmployees} from "../redux/employee.slice.ts";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
-import {TimesheetApiFp} from "../types/timesheet";
+import {TimesheetApiFp, TimesheetType} from "../types/timesheet";
 import {
     loadSingleTimesheetEntry,
     resetSingleTimesheetEntry,
@@ -19,11 +19,39 @@ import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import moment from "moment";
 import {handleError, showError} from "../redux/error.slice.ts";
 import {useTranslation} from "react-i18next";
+import {InvoicingMonthApiFp, PayslipApiFp} from "../types/invoices";
+import {
+    selectLatestEmployeePayslipMonthFormatted,
+    selectPayslipFormatted,
+    setLatestEmployeePayslipMonth,
+    setPayslipMonth
+} from "../redux/invoicingMonth.slice.ts";
+
+function calculateFromEnd(weekOffset: number) {
+    const mwStart = moment();
+    const mwDow = parseInt(moment(mwStart).format("d"));
+    mwStart.subtract(mwDow === 0 ? 6 : mwDow - 1, "days").add(weekOffset * 7, "days");
+    const mwEnd = moment(mwStart).add(6, "days");
+    return {
+        mwStart,
+        mwEnd
+    }
+}
 
 function SingleTimesheetEntry() {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const {timesheetEntryId} = useParams();
+    const payslipMonth = useSelector(selectPayslipFormatted);
+    const latestEmployeePayslipMonth = useSelector(selectLatestEmployeePayslipMonthFormatted);
+    const maxPayslipMonth = typeof payslipMonth === "undefined" ?
+        (typeof latestEmployeePayslipMonth === "undefined" ? undefined : latestEmployeePayslipMonth.format("YYYY-MM-DD"))
+        :
+        (typeof latestEmployeePayslipMonth === "undefined" ? payslipMonth.format("YYYY-MM-DD")
+            :
+            (payslipMonth.isBefore(latestEmployeePayslipMonth) ? latestEmployeePayslipMonth : payslipMonth).format("YYYY-MM-DD"))
+
+
     const customers = useSelector(selectCustomers);
     const employees = useSelector(selectEmployees);
     const timesheetEntry = useSelector(selectSelectedTimesheetEntry);
@@ -63,9 +91,20 @@ function SingleTimesheetEntry() {
         }
     }
 
+    async function fetchPayslipMonth() {
+        const payslipMonth = await InvoicingMonthApiFp(new Configuration({basePath: INVOICES_BACKEND_HOST})).getCurrentPayslipMonth();
+        try {
+            const payslipMonthResponse = await payslipMonth(axios);
+            dispatch(setPayslipMonth(payslipMonthResponse.data));
+        } catch (error) {
+            dispatch(handleError(error))
+        }
+    }
+
     useEffect(() => {
         fetchEmployees();
         fetchCustomers();
+        fetchPayslipMonth();
     }, []);
 
     async function fetchTimesheetEntry(timesheetEntryId: string) {
@@ -86,6 +125,39 @@ function SingleTimesheetEntry() {
         }
     }, [timesheetEntryId]);
 
+    async function fetchEmployeePayslipsMonth() {
+        const calculatedFromEnd = calculateFromEnd(weekOffset);
+        const dayOfMonth = parseInt(moment(calculatedFromEnd.mwStart).format("D"));
+        const searchStart = moment(calculatedFromEnd.mwStart).subtract(dayOfMonth - 1, "days").format("YYYY-MM-DD");
+        const searchEnd = calculatedFromEnd.mwEnd.format("YYYY-MM-DD");
+
+
+        const payslipFetch = await PayslipApiFp(new Configuration({basePath: INVOICES_BACKEND_HOST})).payslipsList(searchStart, searchEnd, timesheetEntry.employeeId);
+        try {
+            const payslipFetchResponse = await payslipFetch(axios);
+            if (payslipFetchResponse.data.length > 0) {
+                let latestMonth = payslipFetchResponse.data[0].month;
+                for (const payslip of payslipFetchResponse.data) {
+                    if (moment(payslip.month, "YYYY-MM-DD").isAfter(moment(latestMonth, "YYYY-MM-DD"))) {
+                        latestMonth = payslip.month;
+                    }
+                }
+
+                const payslipMonthEmployee = moment(latestMonth).add(1, "month");
+                setSelectedDates(selectedDates.filter(value => moment(value, "YYYY-MM-DD").month() >= payslipMonthEmployee.month()));
+                dispatch(setLatestEmployeePayslipMonth(payslipMonthEmployee.format("YYYY-MM-DD")));
+            } else {
+                dispatch(setLatestEmployeePayslipMonth(undefined));
+            }
+        } catch (error) {
+            dispatch(handleError(error))
+        }
+    }
+
+    useEffect(() => {
+        fetchEmployeePayslipsMonth();
+    }, [weekOffset, timesheetEntry.employeeId])
+
 
     async function saveTimesheetEntries() {
         if (timesheetEntry.startTime.trim().length === 0) {
@@ -102,7 +174,7 @@ function SingleTimesheetEntry() {
             }));
             return;
         }
-        if (timesheetEntry.customerId.trim().length === 0) {
+        if (timesheetEntry.type === TimesheetType.Work && (!timesheetEntry.customerId || timesheetEntry.customerId.trim().length === 0)) {
             dispatch(showError({
                 title: "Input error",
                 message: t('single_timesheet_entry.input.error.customer_required')
@@ -150,11 +222,8 @@ function SingleTimesheetEntry() {
                         {typeof timesheetEntryId !== "undefined" ? t('single_timesheet_entry.labels.date') + " *" : `${t('single_timesheet_entry.labels.multiple_dates') + " *"}${selectedDates.length > 1 ? ` · ${t('single_timesheet_entry.labels.days_selected', {count: selectedDates.length})}` : ""}`}
                     </label>
                     {typeof timesheetEntryId === "undefined" && (() => {
-                        const mwStart = moment();
-                        const mwDow = parseInt(moment(mwStart).format("d"));
-                        mwStart.subtract(mwDow === 0 ? 6 : mwDow - 1, "days").add(weekOffset * 7, "days");
-                        const mwEnd = moment(mwStart).add(6, "days");
-                        const label = `${mwStart.locale(i18n.resolvedLanguage || "en").format("DD MMM")} – ${mwEnd.locale(i18n.resolvedLanguage || "en").format("DD MMM")}`;
+                        const calculatedFromEnd = calculateFromEnd(weekOffset);
+                        const label = `${calculatedFromEnd.mwStart.locale(i18n.resolvedLanguage || "en").format("DD MMM")} – ${calculatedFromEnd.mwEnd.locale(i18n.resolvedLanguage || "en").format("DD MMM")}`;
                         return (
                             <div className="flex items-center gap-1">
                                 <span className="text-xs text-muted-foreground mr-1"
@@ -175,17 +244,16 @@ function SingleTimesheetEntry() {
                 </div>
                 {typeof timesheetEntryId !== "undefined" ? (
                     <input type="date" disabled={isAccepted}
+                           min={maxPayslipMonth}
                            className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
                            value={timesheetEntry.date} onChange={(e) => dispatch(loadSingleTimesheetEntry({
                         ...timesheetEntry,
                         date: e.target.value
                     }))}/>
                 ) : (() => {
-                    const mwStart = moment();
-                    const mwDow = parseInt(moment(mwStart).format("d"));
-                    mwStart.subtract(mwDow === 0 ? 6 : mwDow - 1, "days").add(weekOffset * 7, "days");
+                    const calculatedFromEnd = calculateFromEnd(weekOffset);
                     const days = Array.from({length: 7}, (_, i) => {
-                        const d = moment(mwStart);
+                        const d = moment(calculatedFromEnd.mwStart);
                         d.add(i, "days");
                         return d;
                     });
@@ -195,14 +263,18 @@ function SingleTimesheetEntry() {
                             {days.map((d, i) => {
                                 const ds = d.format("YYYY-MM-DD");
                                 const selected = selectedDates.includes(ds);
+                                const beforePayslipMonth = typeof maxPayslipMonth === "undefined" ? true : moment(maxPayslipMonth, "YYYY-MM-DD").isAfter(ds)
                                 const isToday = ds === todayStr;
                                 const isWeekend = i >= 5;
                                 return (
                                     <button
                                         key={ds}
                                         type="button"
+                                        disabled={beforePayslipMonth}
                                         onClick={() => toggleDate(ds)}
-                                        className={`flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all ${
+                                        className={`flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all 
+                                        ${beforePayslipMonth ? "cursor-not-allowed" : ""} 
+                                        ${
                                             selected
                                                 ? "bg-primary border-primary text-primary-foreground"
                                                 : isWeekend
@@ -280,15 +352,37 @@ function SingleTimesheetEntry() {
 
             <div className="col-span-2">
                 <label
-                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.customer')} *</label>
+                    className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.type')} *</label>
                 <select disabled={isAccepted}
                         className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
-                        value={timesheetEntry.customerId} onChange={(e) => dispatch(updateCustomerId(e.target.value))}>
-                    {customers.map((customer) => <option key={customer.id}
-                                                         value={customer.id}>{customer.companyName}</option>)}
+                        value={timesheetEntry.type} onChange={(e) => dispatch(loadSingleTimesheetEntry({
+                    ...timesheetEntry,
+                    type: e.target.value as TimesheetType
+                }))}>
+                    <option key={TimesheetType.Work}
+                            value={TimesheetType.Work}>{t('single_timesheet_entry.type.work')}</option>
+                    <option key={TimesheetType.Holiday}
+                            value={TimesheetType.Holiday}>{t('single_timesheet_entry.type.holiday')}</option>
+                    <option key={TimesheetType.Sickness}
+                            value={TimesheetType.Sickness}>{t('single_timesheet_entry.type.sickness')}</option>
                 </select>
             </div>
 
+            {timesheetEntry.type === TimesheetType.Work ?
+                <div className="col-span-2">
+                    <label
+                        className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.customer')} *</label>
+                    <select disabled={isAccepted}
+                            className="w-full bg-input-background text-foreground text-sm rounded-md px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
+                            value={timesheetEntry.customerId}
+                            onChange={(e) => dispatch(updateCustomerId(e.target.value))}>
+                        {customers.map((customer) => <option key={customer.id}
+                                                             value={customer.id}>{customer.companyName}</option>)}
+                    </select>
+                </div>
+                :
+                <></>
+            }
             <div className="col-span-2">
                 <label
                     className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{t('single_timesheet_entry.labels.description')}</label>

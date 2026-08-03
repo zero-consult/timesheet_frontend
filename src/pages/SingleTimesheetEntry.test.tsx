@@ -88,6 +88,7 @@ test('change form values', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [CUST_1, {...CUST_1, id: '2', contactPersonFirstName: 'Mike'}] as Customer[]}
     )
+    axiosCalls.mockResolvedValueOnce({data: "2026-06-01"})
     const renderResult = render(<Provider
         store={store}><BrowserRouter><SingleTimesheetEntry/></BrowserRouter></Provider>);
     await changeSelectValue(renderResult, 'single_timesheet_entry.labels.employee *', '2');

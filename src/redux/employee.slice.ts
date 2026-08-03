@@ -4,9 +4,17 @@ import type {RootState} from "./store.ts";
 import moment from "moment";
 
 const EMPTY_EMP: Employee = {
-    firstName: "", lastName: "", functionTitle: "", department: "Engineering",
-    email: "", phone: "", startDate: moment().valueOf(), status: "Active", manager: undefined,
-};
+    department: "Engineering",
+    email: "",
+    firstName: "",
+    functionTitle: "",
+    grossWage: 3000,
+    lastName: "",
+    manager: undefined,
+    phone: "",
+    startDate: moment().valueOf(),
+    status: "Active",
+    };
 export type EmployeeState = {
     employees: Employee[]
     selectedEmployee: Employee

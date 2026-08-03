@@ -4,14 +4,15 @@ import type {TimesheetEntry} from "../types/timesheet";
 
 export const TS_ENTRY_1: TimesheetEntry = {
     id: "1",
+    createdAt: moment().valueOf(),
     date: moment().format("YYYY-MM-DD"),
-    startTime: "09:00",
+    description: "description",
     endTime: "17:00",
     customerId: "1",
     employeeId: "1",
+    startTime: "09:00",
     status: "In progress",
-    createdAt: moment().valueOf(),
-    description: "description"
+    type: "Work"
 }
 
 export const EMP_1: Employee = {
@@ -21,6 +22,7 @@ export const EMP_1: Employee = {
     functionTitle: "Software Engineer",
     department: "Engineering",
     email: "",
+    grossWage: 3000,
     phone: "1234567890",
     startDate: moment("2026-07-20", "YYYY-MM-DD").valueOf(),
     status: "Active",
@@ -34,6 +36,7 @@ export const CUST_1: Customer = {
     contactPersonFirstName: "Jane",
     contactPersonLastName: "Doe",
     email: "",
+    hiringRatePerHour: 50,
     phone: "0987654321",
     startDate: moment("2026-07-20", "YYYY-MM-DD").valueOf(),
     status: "Active",
