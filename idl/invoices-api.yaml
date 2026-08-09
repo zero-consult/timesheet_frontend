@@ -4,6 +4,217 @@ info:
   description: ''
   version: 1.0.0
 paths:
+  /invoice:
+    get:
+      tags:
+        - invoice
+      summary: Get the list of invoices for a given period
+      operationId: invoiceList
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: until
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: customerId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invoice'
+    post:
+      tags:
+        - invoice
+      summary: Add a new invoice
+      operationId: generateInvoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '201':
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /invoice/{id}:
+    delete:
+      tags:
+        - invoice
+      summary: Delete an invoice
+      operationId: deleteInvoice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Invoice deleted
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '406':
+          description: 'Entity in status sent or paid'
+          content:
+            text/plain:
+              schema:
+                type: string
+    get:
+      tags:
+        - invoice
+      summary: Get an invoice
+      operationId: getInvoice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoice found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+    put:
+      tags:
+        - invoice
+      summary: Edit an invoice
+      operationId: editInvoice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '201':
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /invoice/{id}/file:
+    get:
+      tags:
+        - invoice
+      summary: Get the invoice file
+      operationId: getInvoiceFile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoice file found
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /invoice/concept/customers:
+    get:
+      tags:
+        - invoice
+      summary: Get the customers with an invoice concept
+      operationId: getCustomersWithConceptInvoices
+      responses:
+        '200':
+          description: Customers found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /invoicingMonth/customer/{id}:
+    get:
+      tags:
+        - invoice
+      summary: Get the latest invoice date of a customer
+      operationId: getInvoiceDateOfCustomer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: invoiceId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoicing month for found
+          content:
+            text/plain:
+              schema:
+                type: string
+        '204':
+          description: No invoicing month for this customer
+        '404':
+          description: 'Entity not found'
+          content:
+            text/plain:
+              schema:
+                type: string
   /invoicingMonth/payslip:
     get:
       tags:
@@ -56,7 +267,7 @@ paths:
             type: string
       responses:
         '200':
-          description: A list of timesheet entries
+          description: A list of payslips
           content:
             application/json:
               schema:
@@ -181,6 +392,51 @@ components:
       required:
         - amount
         - label
+    Invoice:
+      type: object
+      properties:
+        customerId:
+          type: string
+        expireDate:
+          type: string
+          format: date
+        id:
+          type: string
+        invoiceDate:
+          type: string
+          format: date
+        invoiceFile:
+          type: string
+        invoiceNumber:
+          type: integer
+        invoiceUntil:
+          type: string
+          format: date
+        notes:
+          type: string
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        totalWithoutVat:
+          type: number
+          format: double
+        vatPercent:
+          type: number
+          format: double
+      required:
+        - customerId
+        - expireDate
+        - invoiceDate
+        - invoiceUntil
+        - notes
+        - status
+        - totalWithoutVat
+        - vatPercent
+    InvoiceStatus:
+      type: string
+      enum:
+        - Concept
+        - Sent
+        - Paid
     Payslip:
       type: object
       properties:
