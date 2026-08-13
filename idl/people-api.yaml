@@ -312,7 +312,37 @@ paths:
             text/plain:
               schema:
                 type: string
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: login
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInfo'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithToken'
+        '403':
+          description: Could not login
+          content:
+            text/plain:
+              schema:
+                type: string
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Customer:
       type: object
@@ -406,3 +436,28 @@ components:
     Sector:
       type: string
       enum: [ "Tech", "Retail", "Healthcare", "Finance", "Government", "Education", "Other"]
+    LoginInfo:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    UserWithToken:
+      type: object
+      properties:
+        token:
+          type: string
+        admin:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/Employee'
+      required:
+        - token
+        - admin
+        - user
+security:
+  - bearerAuth: [ ]

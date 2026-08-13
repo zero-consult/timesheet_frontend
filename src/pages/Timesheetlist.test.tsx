@@ -81,7 +81,7 @@ test('renders empty timesheet list', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitFor(async () => {
         const tableItem = await renderResult.findAllByText("timesheetlist.table.empty");
         expect(tableItem.length).toEqual(1);
@@ -100,7 +100,7 @@ test('renders timesheet list', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitForDataToBeLoaded(renderResult);
     expect(renderResult).toMatchSnapshot();
 });
@@ -116,7 +116,7 @@ test('can search timesheets', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
 
     await waitForDataToBeLoaded(renderResult);
 
@@ -144,7 +144,7 @@ test('filter on status', async () => {
         {data: [TS_ENTRY_1] as TimesheetEntry[]}
     )
 
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitForDataToBeLoaded(renderResult);
 
     expect(renderResult.getAllByText("John Doe").length).toEqual(2);
@@ -164,7 +164,7 @@ test('sort on customer', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1, {...TS_ENTRY_1, id: '2', customerId: '2'}] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitFor(async () => {
         const tableItem = await renderResult.findAllByText("John Doe");
         expect(tableItem.length).toEqual(3);
@@ -188,7 +188,7 @@ test('sort on employee', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1, {...TS_ENTRY_1, id: '2', employeeId: '2'}] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     waitForDataToBeLoaded(renderResult)
 
     const customerHeader = await renderResult.findByText('timesheetlist.table_headers.employee');
@@ -210,7 +210,7 @@ test('delete timesheet entry', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitForDataToBeLoaded(renderResult);
 
     const deleteButton = renderResult.container.querySelector("#delete-1");
@@ -230,7 +230,7 @@ test('approve timesheet entry', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitForDataToBeLoaded(renderResult);
 
     const approveButton = renderResult.container.querySelector("#approve-1");
@@ -250,7 +250,7 @@ test('reject timesheet entry', async () => {
     axiosCalls.mockResolvedValueOnce(
         {data: [TS_ENTRY_1] as TimesheetEntry[]}
     )
-    const renderResult = render(<Provider store={store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
+    const renderResult = render(<Provider store={store.store}><BrowserRouter><Timesheetlist/></BrowserRouter></Provider>);
     await waitForDataToBeLoaded(renderResult);
 
     const approveButton = renderResult.container.querySelector("#reject-1");

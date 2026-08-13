@@ -3,6 +3,8 @@ import {ArrowLeftToLine, Building2, LogOut} from "lucide-react";
 import {Route, Routes} from "react-router";
 import NavigationList from "./NavigationList.tsx";
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
+import {useDispatch, useSelector} from "react-redux";
+import {logout, selectAdmin, selectUser} from "../redux/account.slice.ts";
 
 export type FullMenuProps = {
     shrink: () => void;
@@ -10,6 +12,14 @@ export type FullMenuProps = {
 
 function FullMenu(props: FullMenuProps) {
     const {t} = useTranslation();
+    const dispatch = useDispatch();
+    const user = useSelector(selectUser);
+    const admin = useSelector(selectAdmin);
+
+    function doLogout() {
+        dispatch(logout());
+        window.location.href = import.meta.env.VITE_PEOPLE_FRONTEND_URL;
+    }
 
     return <>
         {/* Sidebar */}
@@ -46,12 +56,12 @@ function FullMenu(props: FullMenuProps) {
                             className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-semibold text-primary">JD
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs font-medium text-sidebar-foreground truncate">Jan de
-                                Groot</p>
-                            <p className="text-xs text-sidebar-foreground/40 truncate">Admin</p>
+                            <p className="text-xs font-medium text-sidebar-foreground truncate">{user!.firstName + " " + user!.lastName}</p>
+                            <p className="text-xs text-sidebar-foreground/40 truncate">{admin? t('role.admin') : t('role.employee')}</p>
                         </div>
                     </div>
                     <button
+                        onClick={() => doLogout()}
                         className="w-full h-10 flex items-center gap-3 px-2 py-2 rounded-md text-sm text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
                         <LogOut className="w-4 h-4"/> {t('menu.logout')}
                     </button>

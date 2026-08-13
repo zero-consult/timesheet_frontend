@@ -378,6 +378,11 @@ paths:
                 type: string
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Allowance:
       type: object
@@ -464,3 +469,5 @@ components:
         - grossSalary
         - month
         - taxRate
+security:
+  - bearerAuth: [ ]

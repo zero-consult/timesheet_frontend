@@ -76,7 +76,7 @@ vi.mock('react-router', async (importOriginal) => {
 
 test('render single timesheet page', async () => {
     const renderResult = render(<Provider
-        store={store}><BrowserRouter><SingleTimesheetEntry/></BrowserRouter></Provider>);
+        store={store.store}><BrowserRouter><SingleTimesheetEntry/></BrowserRouter></Provider>);
     expect(renderResult).toMatchSnapshot();
 })
 
@@ -90,25 +90,25 @@ test('change form values', async () => {
     )
     axiosCalls.mockResolvedValueOnce({data: "2026-06-01"})
     const renderResult = render(<Provider
-        store={store}><BrowserRouter><SingleTimesheetEntry/></BrowserRouter></Provider>);
+        store={store.store}><BrowserRouter><SingleTimesheetEntry/></BrowserRouter></Provider>);
     await changeSelectValue(renderResult, 'single_timesheet_entry.labels.employee *', '2');
-    let selectedTimesheetEntry = selectSelectedTimesheetEntry(store.getState());
+    let selectedTimesheetEntry = selectSelectedTimesheetEntry(store.store.getState());
     expect(selectedTimesheetEntry.employeeId).toBe('2')
     expect(() => {
         renderResult.getByText('single_timesheet_entry.save')
     }).toThrow()
     fireEvent.click(renderResult.getByText('single_timesheet_entry.weekday.mo'));
     await changeInputValue(renderResult, 'single_timesheet_entry.labels.start_time *', '09:30');
-    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.getState());
+    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.store.getState());
     expect(selectedTimesheetEntry.startTime).toBe('09:30')
     await changeInputValue(renderResult, 'single_timesheet_entry.labels.end_time *', '17:30');
-    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.getState());
+    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.store.getState());
     expect(selectedTimesheetEntry.endTime).toBe('17:30')
     await changeSelectValue(renderResult, 'single_timesheet_entry.labels.customer *', '2');
-    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.getState());
+    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.store.getState());
     expect(selectedTimesheetEntry.customerId).toBe('2')
     await changeTextAreaValue(renderResult, 'single_timesheet_entry.labels.description', 'some description');
-    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.getState());
+    selectedTimesheetEntry = selectSelectedTimesheetEntry(store.store.getState());
     expect(selectedTimesheetEntry.description).toBe('some description')
     expect(renderResult.getByText('single_timesheet_entry.save')).not.toBeNull();
 }, 50000)
@@ -123,7 +123,7 @@ test('Save timesheet', async () => {
     )
 
     const renderResult = render(<Provider
-        store={store}><BrowserRouter><ErrorMessagePopup/><SingleTimesheetEntry/></BrowserRouter></Provider>);
+        store={store.store}><BrowserRouter><ErrorMessagePopup/><SingleTimesheetEntry/></BrowserRouter></Provider>);
 
     fireEvent.click(renderResult.getByText('single_timesheet_entry.weekday.mo'));
     fireEvent.click(renderResult.getByText('single_timesheet_entry.weekday.tu'));
@@ -136,7 +136,7 @@ test('Save timesheet', async () => {
     await changeInputValue(renderResult, 'single_timesheet_entry.labels.start_time *', '09:30');
     await changeInputValue(renderResult, 'single_timesheet_entry.labels.end_time *', '17:30');
 
-    const selectedTimesheetEntry = selectSelectedTimesheetEntry(store.getState());
+    const selectedTimesheetEntry = selectSelectedTimesheetEntry(store.store.getState());
     axiosCalls.mockReset();
     axiosCalls.mockResolvedValueOnce(({
         data: {...selectedTimesheetEntry, id: '1'}
@@ -165,10 +165,10 @@ test('Edit timesheet', async () => {
     const useParamsCalls = useParams as MockedFunction<typeof useParams>;
     useParamsCalls.mockReturnValue({timesheetEntryId: '1'})
     const renderResult = render(<Provider
-        store={store}><BrowserRouter><ErrorMessagePopup/><SingleTimesheetEntry/></BrowserRouter></Provider>);
+        store={store.store}><BrowserRouter><ErrorMessagePopup/><SingleTimesheetEntry/></BrowserRouter></Provider>);
     const saveButton = await renderResult.findByText('single_timesheet_entry.save');
 
-    const selectedTimesheet = selectSelectedTimesheetEntry(store.getState());
+    const selectedTimesheet = selectSelectedTimesheetEntry(store.store.getState());
     axiosCalls.mockResolvedValueOnce(({
         data: selectedTimesheet
     }))

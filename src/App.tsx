@@ -1,21 +1,30 @@
 import './App.css'
 import {BrowserRouter, Route, Routes} from "react-router";
-import {Provider} from "react-redux";
-import store from "./redux/store.ts";
+import {useSelector} from "react-redux";
 import ErrorMessagePopup from "./components/ErrorMessagePopup.tsx";
 
 import './i18n';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CollapsedMenu from "./components/CollapsedMenu.tsx";
 import FullMenu from "./components/FullMenu.tsx";
 import Timesheetlist from "./pages/Timesheetlist.tsx";
 import SingleTimesheetEntry from "./pages/SingleTimesheetEntry.tsx";
+import {selectUser} from "./redux/account.slice.ts";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
+    const user = useSelector(selectUser);
 
-    return (
-        <Provider store={store}>
+    useEffect(() => {
+        if (typeof user === "undefined") {
+            window.location.href = import.meta.env.VITE_PEOPLE_FRONTEND_URL;
+        }
+    }, [])
+
+    if (typeof user === "undefined") {
+        return <></>
+    } else {
+        return <>
             <ErrorMessagePopup/>
             <BrowserRouter>
                 <div className="min-h-screen flex" style={{fontFamily: "'DM Sans', sans-serif"}}>
@@ -25,7 +34,8 @@ function App() {
                         <FullMenu shrink={() => setCollapsed(true)}/>
                     }
                     {/* Page content */}
-                    <main className={"flex-1 flex flex-col min-w-0 bg-background overflow-y-auto" + (collapsed ? " pl-15": " pl-60")}>
+                    <main
+                        className={"flex-1 flex flex-col min-w-0 bg-background overflow-y-auto" + (collapsed ? " pl-15" : " pl-60")}>
                         {/* Routes */}
                         <Routes>
                             <Route path="/" element={<Timesheetlist/>}/>
@@ -36,8 +46,8 @@ function App() {
                     </main>
                 </div>
             </BrowserRouter>
-        </Provider>
-    )
+        </>
+    }
 }
 
 export default App

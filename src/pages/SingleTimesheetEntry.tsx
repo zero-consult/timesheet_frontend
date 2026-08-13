@@ -26,6 +26,7 @@ import {
     setLatestEmployeePayslipMonth,
     setPayslipMonth
 } from "../redux/invoicingMonth.slice.ts";
+import {selectToken} from "../redux/account.slice.ts";
 
 function calculateFromEnd(weekOffset: number) {
     const mwStart = moment();
@@ -42,6 +43,7 @@ function SingleTimesheetEntry() {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const {timesheetEntryId} = useParams();
+    const token = useSelector(selectToken);
     const payslipMonth = useSelector(selectPayslipFormatted);
     const latestEmployeePayslipMonth = useSelector(selectLatestEmployeePayslipMonthFormatted);
     const maxPayslipMonth = typeof payslipMonth === "undefined" ?
@@ -66,7 +68,7 @@ function SingleTimesheetEntry() {
     }
 
     async function fetchEmployees() {
-        const employeeList = await EmployeeApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).employeesList();
+        const employeeList = await EmployeeApiFp(new Configuration({accessToken: token, basePath: PEOPLE_BACKEND_HOST})).employeesList();
         try {
             const employeeListResponse = await employeeList(axios);
             dispatch(loadEmployees(employeeListResponse.data));
@@ -79,7 +81,7 @@ function SingleTimesheetEntry() {
     }
 
     async function fetchCustomers() {
-        const customerList = await CustomerApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).customersList();
+        const customerList = await CustomerApiFp(new Configuration({accessToken: token, basePath: PEOPLE_BACKEND_HOST})).customersList();
         try {
             const customerListResponse = await customerList(axios);
             dispatch(loadCustomers(customerListResponse.data));
@@ -92,7 +94,7 @@ function SingleTimesheetEntry() {
     }
 
     async function fetchPayslipMonth() {
-        const payslipMonth = await InvoicingMonthApiFp(new Configuration({basePath: INVOICES_BACKEND_HOST})).getCurrentPayslipMonth();
+        const payslipMonth = await InvoicingMonthApiFp(new Configuration({accessToken: token, basePath: INVOICES_BACKEND_HOST})).getCurrentPayslipMonth();
         try {
             const payslipMonthResponse = await payslipMonth(axios);
             dispatch(setPayslipMonth(payslipMonthResponse.data));
@@ -108,7 +110,7 @@ function SingleTimesheetEntry() {
     }, []);
 
     async function fetchTimesheetEntry(timesheetEntryId: string) {
-        const timesheetEntryFetch = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).getTimesheetEntry(timesheetEntryId);
+        const timesheetEntryFetch = await TimesheetApiFp(new Configuration({accessToken: token, basePath: TIMESHEET_BACKEND_HOST})).getTimesheetEntry(timesheetEntryId);
         try {
             const timesheetEntryFetchResponse = await timesheetEntryFetch(axios);
             dispatch(loadSingleTimesheetEntry(timesheetEntryFetchResponse.data));
@@ -132,7 +134,7 @@ function SingleTimesheetEntry() {
         const searchEnd = calculatedFromEnd.mwEnd.format("YYYY-MM-DD");
 
 
-        const payslipFetch = await PayslipApiFp(new Configuration({basePath: INVOICES_BACKEND_HOST})).payslipsList(searchStart, searchEnd, timesheetEntry.employeeId);
+        const payslipFetch = await PayslipApiFp(new Configuration({accessToken: token, basePath: INVOICES_BACKEND_HOST})).payslipsList(searchStart, searchEnd, timesheetEntry.employeeId);
         try {
             const payslipFetchResponse = await payslipFetch(axios);
             if (payslipFetchResponse.data.length > 0) {
@@ -182,7 +184,7 @@ function SingleTimesheetEntry() {
             return;
         }
         if (typeof timesheetEntryId !== "undefined") {
-            const timesheetEntryUpdate = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(timesheetEntryId, timesheetEntry);
+            const timesheetEntryUpdate = await TimesheetApiFp(new Configuration({accessToken: token, basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(timesheetEntryId, timesheetEntry);
             try {
                 await timesheetEntryUpdate(axios);
                 window.location.href = "/timesheets";
@@ -193,7 +195,7 @@ function SingleTimesheetEntry() {
             for (const date of selectedDates) {
                 const timesheetEntryToCreate = {...timesheetEntry, date: date};
                 try {
-                    const addTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).addTimesheetEntry(timesheetEntryToCreate);
+                    const addTimesheetEntry = await TimesheetApiFp(new Configuration({accessToken: token, basePath: TIMESHEET_BACKEND_HOST})).addTimesheetEntry(timesheetEntryToCreate);
                     await addTimesheetEntry(axios);
                 } catch (error) {
                     dispatch(handleError(error))

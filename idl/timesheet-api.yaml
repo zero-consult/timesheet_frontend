@@ -28,6 +28,11 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: customerId
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: A list of timesheet entries
@@ -149,6 +154,11 @@ paths:
               schema:
                 type: string
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     TimesheetEntry:
       type: object
@@ -196,3 +206,5 @@ components:
         - Work
         - Holiday
         - Sickness
+security:
+  - bearerAuth: [ ]

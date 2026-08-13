@@ -20,6 +20,8 @@ import {loadCustomers, selectCustomers} from "../redux/customer.slice.ts";
 import {handleError} from "../redux/error.slice.ts";
 import {useTranslation} from "react-i18next";
 import SortIcon from "../components/SortIcon.tsx";
+import {getInitials} from "../utils/NameUtils.ts";
+import {selectToken} from "../redux/account.slice.ts";
 
 const TIMESHEET_STATUS_COLORS: Record<TimesheetStatus, string> = {
     Approved: "bg-emerald-500/15 text-emerald-400",
@@ -38,9 +40,6 @@ const INITIALS_COLORS = [
     "bg-amber-600", "bg-teal-600", "bg-indigo-600",
 ];
 
-function getInitials(name: string) {
-    return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
-}
 
 function getAvatarColor(name: string) {
     return INITIALS_COLORS[name.charCodeAt(0) % INITIALS_COLORS.length];
@@ -49,6 +48,7 @@ function getAvatarColor(name: string) {
 function Timesheetlist() {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
+    const token = useSelector(selectToken);
     const customers = useSelector(selectCustomers);
     const employees = useSelector(selectEmployees);
     const entries = useSelector(selectTimesheetEntries);
@@ -71,7 +71,7 @@ function Timesheetlist() {
     });
 
     async function fetchEmployees() {
-        const employeeList = await EmployeeApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).employeesList();
+        const employeeList = await EmployeeApiFp(new Configuration({accessToken: token, basePath: PEOPLE_BACKEND_HOST})).employeesList();
         try {
             const employeeListResponse = await employeeList(axios);
             dispatch(loadEmployees(employeeListResponse.data));
@@ -81,7 +81,7 @@ function Timesheetlist() {
     }
 
     async function fetchCustomers() {
-        const customerList = await CustomerApiFp(new Configuration({basePath: PEOPLE_BACKEND_HOST})).customersList();
+        const customerList = await CustomerApiFp(new Configuration({accessToken: token, basePath: PEOPLE_BACKEND_HOST})).customersList();
         try {
             const customerListResponse = await customerList(axios);
             dispatch(loadCustomers(customerListResponse.data));
@@ -91,7 +91,7 @@ function Timesheetlist() {
     }
 
     async function fetchTimesheetEntries() {
-        const timesheetEntryList = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).timesheetsList(weekStart.format("YYYY-MM-DD"), weekEnd.format("YYYY-MM-DD"));
+        const timesheetEntryList = await TimesheetApiFp(new Configuration({accessToken: token, basePath: TIMESHEET_BACKEND_HOST})).timesheetsList(weekStart.format("YYYY-MM-DD"), weekEnd.format("YYYY-MM-DD"));
         try {
             const timesheetEntryListResponse = await timesheetEntryList(axios);
             dispatch(loadTimesheetEntries(timesheetEntryListResponse.data));
@@ -184,7 +184,7 @@ function Timesheetlist() {
     const maxDayHours = Math.max(...hoursPerDay, 8);
 
     async function deleteTimesheetEntry(id: string) {
-        const deleteTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).deleteTimesheetEntry(id);
+        const deleteTimesheetEntry = await TimesheetApiFp(new Configuration({accessToken: token, basePath: TIMESHEET_BACKEND_HOST})).deleteTimesheetEntry(id);
         try {
             await deleteTimesheetEntry(axios);
             fetchTimesheetEntries();
@@ -194,7 +194,7 @@ function Timesheetlist() {
     }
 
     async function updateTimesheetEntry(updatedEntry: TimesheetEntry) {
-        const updateTimesheetEntry = await TimesheetApiFp(new Configuration({basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(updatedEntry.id || "", updatedEntry);
+        const updateTimesheetEntry = await TimesheetApiFp(new Configuration({accessToken: token, basePath: TIMESHEET_BACKEND_HOST})).updateTimesheetEntry(updatedEntry.id || "", updatedEntry);
         try {
             await updateTimesheetEntry(axios);
             fetchTimesheetEntries();
