@@ -8,6 +8,7 @@ export default ({mode}: { mode: string }) => {
     process.env = {...process.env, ...loadEnv(mode, process.cwd())};
 
     return defineConfig({
+        base: "/timesheets",
         legacy: {inconsistentCjsInterop: true},
         test: {
             globals: true,

@@ -16,7 +16,7 @@ const PERSONNEL_NAV: LinkProps[] = [
     },
     {
         name: "timesheets",
-        url: "/timesheets",
+        url: "/timesheets/timesheets",
         icon: Clock,
         label: "menu.timesheets",
     },

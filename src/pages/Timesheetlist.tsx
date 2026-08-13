@@ -245,7 +245,7 @@ function Timesheetlist() {
                                 className="px-2.5 py-1 rounded text-sm text-muted-foreground hover:text-foreground hover:bg-card transition-colors">›
                         </button>
                     </div>
-                    <Link to={"/timesheets/add"}
+                    <Link to={"/timesheets/timesheets/add"}
                           className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
                         <Plus className="w-4 h-4"/> {t('timesheetlist.register')}
                     </Link>
@@ -421,7 +421,7 @@ function Timesheetlist() {
                                     <div
                                         className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                         {entry.status !== "Approved" ?
-                                            <><Link to={"/timesheets/" + entry.id + "/edit"}
+                                            <><Link to={"/timesheets/timesheets/" + entry.id + "/edit"}
                                                     className="p-1.5 rounded-md hover:bg-primary/15 hover:text-primary text-muted-foreground transition-colors"><Pencil
                                                 className="w-3.5 h-3.5"/></Link>
                                                 <button

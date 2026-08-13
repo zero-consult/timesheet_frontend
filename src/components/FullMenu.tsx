@@ -5,6 +5,7 @@ import NavigationList from "./NavigationList.tsx";
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {logout, selectAdmin, selectUser} from "../redux/account.slice.ts";
+import {getInitials} from "../utils/NameUtils.ts";
 
 export type FullMenuProps = {
     shrink: () => void;
@@ -44,8 +45,9 @@ function FullMenu(props: FullMenuProps) {
             <nav className="flex-1 px-2 py-4 space-y-0.5">
                 <Routes>
                     <Route path="/" element={<NavigationList compact={false} active="timesheets"/>}/>
-                    <Route path="/timesheets/*" element={<NavigationList compact={false} active="timesheets"/>}/>
                     <Route path="/timesheets" element={<NavigationList compact={false} active="timesheets"/>}/>
+                    <Route path="/timesheets/timesheets/*" element={<NavigationList compact={false} active="timesheets"/>}/>
+                    <Route path="/timesheets/timesheets" element={<NavigationList compact={false} active="timesheets"/>}/>
                 </Routes>
             </nav>
 
@@ -53,7 +55,7 @@ function FullMenu(props: FullMenuProps) {
                 <div className="px-3 py-4 border-t border-sidebar-border">
                     <div className="flex h-10 items-center gap-3 px-1 py-2.5 mb-1">
                         <div
-                            className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-semibold text-primary">JD
+                            className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-semibold text-primary">{getInitials(user!.firstName + " " + user!.lastName)}
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium text-sidebar-foreground truncate">{user!.firstName + " " + user!.lastName}</p>

@@ -49,12 +49,12 @@ vi.mock('react-i18next', async (importOriginal) => {
     }
 });
 
-test('renders timesheets', async () => {
+test('renders empty page with menu', async () => {
     (axios.request as MockedFunction<typeof axios.request>).mockResolvedValue(
         { data: [] as Employee[]}
     )
     store.store.dispatch(login({user: EMP_1, admin: true, token: 'Test'}))
     render(<Provider store={store.store}><App /></Provider>);
     const linkElement = await screen.findAllByText("menu.timesheets");
-    expect(linkElement.length).toEqual(2);
+    expect(linkElement.length).toEqual(1);
 });

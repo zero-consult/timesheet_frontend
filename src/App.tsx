@@ -38,10 +38,10 @@ function App() {
                         className={"flex-1 flex flex-col min-w-0 bg-background overflow-y-auto" + (collapsed ? " pl-15" : " pl-60")}>
                         {/* Routes */}
                         <Routes>
-                            <Route path="/" element={<Timesheetlist/>}/>
                             <Route path="/timesheets" element={<Timesheetlist/>}/>
-                            <Route path="/timesheets/add" element={<SingleTimesheetEntry/>}/>
-                            <Route path="/timesheets/:timesheetEntryId/edit" element={<SingleTimesheetEntry/>}/>
+                            <Route path="/timesheets/timesheets" element={<Timesheetlist/>}/>
+                            <Route path="/timesheets/timesheets/add" element={<SingleTimesheetEntry/>}/>
+                            <Route path="/timesheets/timesheets/:timesheetEntryId/edit" element={<SingleTimesheetEntry/>}/>
                         </Routes>
                     </main>
                 </div>
