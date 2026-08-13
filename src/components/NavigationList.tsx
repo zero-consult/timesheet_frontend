@@ -1,4 +1,3 @@
-import {Link} from "react-router";
 import {Briefcase, Clock, FileText, Receipt, Users} from "lucide-react";
 import {useTranslation} from "react-i18next";
 
@@ -55,9 +54,13 @@ type LinkProps = {
 function SingleLink(linkInfo: LinkProps) {
     const {t} = useTranslation();
 
-    return <Link
+    function goto(url: string) {
+        window.location.href = url;
+    }
+
+    return <button
         key={linkInfo.name}
-        to={linkInfo.url}
+        onClick={() => goto(linkInfo.url)}
         className={`w-full flex items-center h-10 gap-3 px-3 py-2.5 rounded-md text-sm transition-colors cursor-pointer
       ${
             linkInfo.active
@@ -66,7 +69,7 @@ function SingleLink(linkInfo: LinkProps) {
         }`}>
         <linkInfo.icon className="ml-0.5 w-4 h-4 shrink-0"/>
         {linkInfo.compact ? '' : t("menu." + linkInfo.name)}
-    </Link>
+    </button>
 }
 
 function NavigationList(props: NavigationListProps) {
@@ -74,9 +77,17 @@ function NavigationList(props: NavigationListProps) {
 
     return <>
         <p className="pl-3 pr-2 mb-1 text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/30">{props.compact ? t("menu.per") : t("menu.personnel")}</p>
-        {PERSONNEL_NAV.map((linkInfo) => SingleLink({...linkInfo, compact: props.compact, active: props.active === linkInfo.name}))}
+        {PERSONNEL_NAV.map((linkInfo) => SingleLink({
+            ...linkInfo,
+            compact: props.compact,
+            active: props.active === linkInfo.name
+        }))}
         <p className="pl-3 pr-2 mb-1 text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/30">{props.compact ? t("menu.fin") : t("menu.financial")}</p>
-        {FINANCIAL_NAV.map((linkInfo) => SingleLink({...linkInfo, compact: props.compact, active: props.active === linkInfo.name}))}
+        {FINANCIAL_NAV.map((linkInfo) => SingleLink({
+            ...linkInfo,
+            compact: props.compact,
+            active: props.active === linkInfo.name
+        }))}
     </>
 }
 
