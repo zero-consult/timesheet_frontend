@@ -32,6 +32,7 @@ function CollapsedMemu(props: CollapsedMemuProps) {
 
             <nav className="flex-1 px-2 py-4 space-y-0.5">
                 <Routes>
+                    <Route path="*" element={<NavigationList compact={true} active="none"/>}/>
                     <Route path="/" element={<NavigationList compact={true} active="timesheets"/>}/>
                     <Route path="/timesheets" element={<NavigationList compact={true} active="timesheets"/>}/>
                     <Route path="/timesheets/timesheets/*" element={<NavigationList compact={true} active="timesheets"/>}/>

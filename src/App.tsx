@@ -10,6 +10,7 @@ import FullMenu from "./components/FullMenu.tsx";
 import Timesheetlist from "./pages/Timesheetlist.tsx";
 import SingleTimesheetEntry from "./pages/SingleTimesheetEntry.tsx";
 import {selectUser} from "./redux/account.slice.ts";
+import NotFound from "./pages/NotFound.tsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -38,6 +39,7 @@ function App() {
                         className={"flex-1 flex flex-col min-w-0 bg-background overflow-y-auto" + (collapsed ? " pl-15" : " pl-60")}>
                         {/* Routes */}
                         <Routes>
+                            <Route path="*" element={<NotFound/>}/>
                             <Route path="/timesheets" element={<Timesheetlist/>}/>
                             <Route path="/timesheets/timesheets" element={<Timesheetlist/>}/>
                             <Route path="/timesheets/timesheets/add" element={<SingleTimesheetEntry/>}/>

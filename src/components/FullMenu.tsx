@@ -44,6 +44,7 @@ function FullMenu(props: FullMenuProps) {
 
             <nav className="flex-1 px-2 py-4 space-y-0.5">
                 <Routes>
+                    <Route path="*" element={<NavigationList compact={false} active="none"/>}/>
                     <Route path="/" element={<NavigationList compact={false} active="timesheets"/>}/>
                     <Route path="/timesheets" element={<NavigationList compact={false} active="timesheets"/>}/>
                     <Route path="/timesheets/timesheets/*" element={<NavigationList compact={false} active="timesheets"/>}/>
